@@ -17,40 +17,11 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ERAGPSIM_ARCH_INFORMATION_HPP
-#define ERAGPSIM_ARCH_INFORMATION_HPP
+#ifndef ERAGPSIM_ARCH_COMMON_INFORMATION_HPP
+#define ERAGPSIM_ARCH_COMMON_INFORMATION_HPP
 
-/**
- * Contains some enum and type declarations used for information objects.
- */
-namespace Information {
+#include "third-party/json/json.hpp"
 
-/** Type for the processor word size, in bits. */
-using word_size_t = unsigned short;
+class Information {};
 
-/*
- * The different kinds of endianness an extension may support.
- *
- * For clarification, let our 32-bit word be 0xDEADBEEF:
- * - Little Endian: low-order values at lower addresses: 0xEFBEADDE
- * - Big Endian: high-order values at lower addresses: 0xDEADBEEF
- * - Mixed Endian: a mixture of the first two, e.g. storing 32-bit words
- * in
- *   little-endian but swapping 16-bit portions (as if the word-size were
- *   actually 16-bit): 0xADDEEFBE
- * - Bi Endian: Allows for dynamic configuration of the system's endianess
- * to
- *   be either little or big endian (usually at startup).
- */
-enum class Endianness { LITTLE, BIG, MIXED, BI };
-
-/**
- * Describes how the architecture handles misaligned accesses.
- *
- * Strict means the architecture does not allow misaligned memory accesses.
- * Relaxed means it does.
- */
-enum class AlignmentBehavior { STRICT, RELAXED };
-}
-
-#endif /* ERAGPSIM_ARCH_INFORMATION_HPP */
+#endif /* ERAGPSIM_ARCH_COMMON_INFORMATION_HPP */

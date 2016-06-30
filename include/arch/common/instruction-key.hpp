@@ -27,6 +27,21 @@
 #include "common/container-adapter.hpp"
 #include "common/utility.hpp"
 
+/**
+ * Class to identify an instruction in an ISA.
+ *
+ * It is naive to think that an instruction is
+ * identified uniquely through its opcode alone. In RISC-V, the opcode is a
+ * quite general *instruction group* identifier. For example, all load
+ * operations and all store operations have the same opcode. Next to the opcode,
+ * almost all instructions have *function bits*, which further specialize an
+ * instruction. For example, for loads, the instructions for load operations of
+ * different sizes (`LH`, `LD`) have the same opcode, but different function
+ * bits (in this case referred to as the `width`). These bits would tell the
+ * decoder the width and sign of the data to load (and analogously, store, for
+ * `S[BHWD][U]`). It is thus necessary to identify instructions through a tuple
+ * of keys. In practice, this means a hashtable, which provides most flexibilty.
+ */
 class InstructionKey
     : public ContainerAdapter<std::unordered_map<std::string, std::size_t>> {
  public:
@@ -45,14 +60,44 @@ class InstructionKey
   using KeyCollection   = std::vector<Key>;
   using ValueCollection = std::vector<Value>;
 
+
+  /**
+   * Constructs an InstructionKey from a range of key/value pairs.
+   *
+   * @tparam Range A range-like type.
+   *
+   * @param range The range of key/value pairs.
+   */
   template <typename Range>
   explicit InstructionKey(const Range& range) : super(range) {
   }
 
+  /**
+   * Constructs an InstructionKey from a list of key/value pairs.
+   *
+   * @param list An initializer list of key/value pairs.
+   */
   explicit InstructionKey(InitializerList list);
 
+  /**
+   * Adds a new key/valeu pair to the InstructionKey.
+   *
+   * @param key The key of this pair.
+   * @param value The value of this pair.
+   *
+   * @return The current `InstructionKey` object.
+   */
   InstructionKey& add(const Key& key, const Value& value);
 
+  /**
+   * Adds a range of new key/value pairs to the InstructionKey.
+   *
+   * @tparam A range-like type.
+   *
+   * @param range The range of key/value pairs to add.
+   *
+   * @return The current `InstructionKey` object.
+   */
   template <typename Range>
   InstructionKey& add(const Range& range) {
     for (auto& pair : range) {
@@ -62,14 +107,46 @@ class InstructionKey
     return *this;
   }
 
+  /**
+   * Adds a list of key/value pairs to the InstructionKey.
+   *
+   * @param list The list of key/value pairs to add.
+   *
+   * @return The current `InstructionKey` object.
+   */
   InstructionKey& add(InitializerList list);
 
+  /**
+   * Returns a value for the given key.
+   *
+   * @param key The key to look up the value for.
+   */
   const Value& get(const Key& key) const noexcept;
+
+  /**
+   * Returns a value for the given key.
+   *
+   * @param key The key to look up the value for.
+   *
+   * @see get()
+   */
   const Value& operator[](const Key& key) const;
 
+  /**
+   * Returns whether or not the InstructionKey has the given key.
+   *
+   * @param key The key to look for.
+   */
   bool hasKey(const Key& key) const noexcept;
 
+  /**
+   * Returns the keys of the InstructionKey.
+   */
   KeyCollection getKeys() const noexcept;
+
+  /**
+   * Returns the values of the InstructionKey.
+   */
   ValueCollection getValues() const noexcept;
 };
 
