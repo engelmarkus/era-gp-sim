@@ -14,9 +14,9 @@ public:
 
   bool get(std::size_t) const;
   bool set(std::size_t, bool);
-  bool put(std::size_t, bool);
+  void put(std::size_t, bool);
   std::size_t getByteSize() const;
   std::size_t getSize() const;
-  std::size_t getByteAmount() const;
+  std::size_t getByteCount() const;
 };
 #endif // ERAGPSIM_CORE_MEMORYVALUE_HPP_
