@@ -18,17 +18,16 @@
 #ifndef ERAGPSIM_ARCH_ABSTRACT_IMMEDIATE_NODE_FACTORY_HPP
 #define ERAGPSIM_ARCH_ABSTRACT_IMMEDIATE_NODE_FACTORY_HPP
 
+#include <memory>
+
+#include "arch/common/abstract-syntax-tree-node.hpp"
+
 /**
  * @brief The AbstractImmediateNodeFactory class
  * Abstract factory type for creating SyntaxTreeNodes of type immediate
  */
 class AbstractImmediateNodeFactory {
  public:
-  AbstractImmediateNodeFactory() {
-  }
-
-  virtual ~AbstractImmediateNodeFactory();
-
   /**
    * @brief createImmediateNode
    * Creates and returns an architecture-specific implementation of a

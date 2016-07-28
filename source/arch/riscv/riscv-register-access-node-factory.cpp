@@ -15,26 +15,13 @@
  * You should have received a copy of the GNU General Public License
 * along with this program. If not, see <http://www.gnu.org/licenses/>.*/
 
-#ifndef ERAGPSIM_ARCH_ABSTRCT_MEMORY_ACCESS_NODE_FACTORY_HPP
-#define ERAGPSIM_ARCH_ABSTRCT_MEMORY_ACCESS_NODE_FACTORY_HPP
+#include "arch/common/abstract-register-node.hpp"
+#include "arch/riscv/riscv-register-access-node-factory.hpp"
 
-#include <memory>
+using namespace riscv;
 
-/**
- * @brief The AbstractMemoryAccessNodeFactory class
- * Abstract factory type for creating SyntaxTreeNodes of type memory access
- */
-class AbstractMemoryAccessNodeFactory {
- public:
-  /**
-   * @brief createMemoryAccessNode
-   * Creates and returns an architecture-specific implementation of a
-   * SyntaxTreeNode of type memory access.
-   *
-   * @return std::unique_ptr pointing to the newly created SyntaxTreeNode
-   */
-  virtual std::unique_ptr<AbstractSyntaxTreeNode>
-  createMemoryAccessNode() const = 0;
-};
-
-#endif /* ERAGPSIM_ARCH_ABSTRCT_MEMORY_ACCESS_NODE_FACTORY_HPP */
+std::unique_ptr<AbstractSyntaxTreeNode>
+RegisterAccessNodeFactory::createRegisterAccessNode(
+    const std::string &id) const {
+  return std::make_unique<RegisterNode>(id);
+}

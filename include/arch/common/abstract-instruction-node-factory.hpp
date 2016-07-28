@@ -21,7 +21,7 @@
 #include <memory>
 #include <string>
 
-#include "arch/common/abstract-syntax-tree.hpp"
+#include "arch/common/abstract-syntax-tree-node.hpp"
 #include "core/memory-value.hpp"
 
 /**
@@ -30,11 +30,6 @@
  */
 class AbstractInstructionNodeFactory {
  public:
-  AbstractInstructionNodeFactory() {
-  }
-
-  virtual ~AbstractInstructionNodeFactory();
-
   /**
    * @brief createInstructionNode
    * Creates and returns an architecture-specific implementation of a

@@ -20,67 +20,9 @@
 
 #include <unordered_map>
 
-#include "arch/common/abstract-node-factories.hpp"
+#include "arch/common/abstract-immediate-node-factory.hpp"
 
 namespace riscv {
-
-/**
- * \brief The InstructionNodeFactory class is a
- * concrete Implementation of AbstractInstructionNodeFactory for the RISC-V
- * architecture.
- * \see AbstractInstructionNodeFactory
- */
-class InstructionNodeFactory : public AbstractInstructionNodeFactory {
- public:
-  using InstructionMap = std::unordered_map<
-      std::string,
-      std::function<std::unique_ptr<AbstractSyntaxTreeNode>()>>;
-
-  /**
-   * \brief InstructionNodeFactory
-   * Creates a Instruction Node Factory for RISC-V architecture
-   */
-  InstructionNodeFactory() {
-    initializeInstructionMap();
-  }
-
-  /*! Default constructed copy constructor */
-  InstructionNodeFactory(InstructionNodeFactory &copy) = default;
-
-  /*! Default constructed move constructor */
-  InstructionNodeFactory(InstructionNodeFactory &&move) = default;
-
-  /**
-   * \brief createInstructionNode
-   * Creates and returns a RISC-V Instruction Node for a valid input token, or
-   * nullptr if the token cannot be mapped to a implemented RISC-V instruction
-   * \param token
-   * \return std::uniqe_ptr pointing to the newly created instruction node, or
-   * nullptr if the token cannot be mapped to a implemented RISC-V instruction
-   */
-  virtual std::unique_ptr<AbstractSyntaxTreeNode>
-  createInstructionNode(const std::string &token) const override;
-
-  ~InstructionNodeFactory() = default;
-
- private:
-  /**
-   * \brief _instructionMap
-   * Table, that maps the instruction identifier (e.g. the token "ADD" for
-   * Addition) to a function that creates the special instruction node (e.g.
-   * AddInstructionNode)
-   */
-  InstructionMap _instructionMap;
-
-  /**
-   * \brief initializeInstructionMap
-   * Fills instructionMap with values.
-   * Use lambda-functions with no parameters and return type
-   * std::unique_ptr<AbstractSyntaxTreeNode> as value.
-   * Use UPPERCASE instruction identifier as key.
-   */
-  void initializeInstructionMap();
-};
 
 /**
  * \brief The ImmediateNodeFactory class is a concrete implementation of

@@ -18,17 +18,14 @@
 #ifndef ERAGPSIM_ARCH_ABSTRACT_REGISTER_ACCESS_NODE_FACTORY_HPP
 #define ERAGPSIM_ARCH_ABSTRACT_REGISTER_ACCESS_NODE_FACTORY_HPP
 
+#include "arch/common/abstract-syntax-tree-node.hpp"
+
 /**
  * @brief The AbstractRegisterAccessNodeFactory class
  * Abstract factory type for creating SyntaxTreeNodes of type register access
  */
 class AbstractRegisterAccessNodeFactory {
  public:
-  AbstractRegisterAccessNodeFactory() {
-  }
-
-  virtual ~AbstractRegisterAccessNodeFactory();
-
   /**
    * @brief createRegisterAccessNode
    * Creates and returns an architecture-specific implementation of a

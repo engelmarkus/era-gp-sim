@@ -20,6 +20,12 @@
 
 #include <memory>
 
+#include "abstract-arithmetic-node-factory.hpp"
+#include "abstract-immediate-node-factory.hpp"
+#include "abstract-instruction-node-factory.hpp"
+#include "memory-access-node-factory.hpp"
+#include "register-access-node-factory.hpp"
+
 /**
  * \brief The AbstractNodeFactoryCollection class is a convienience class
  * containing an instance of each AbstractNodeFactory.

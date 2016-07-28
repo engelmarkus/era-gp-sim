@@ -18,6 +18,7 @@
 #ifndef ERAGPSIM_ARCH_COMMON_ABSTRACT_REGISTER_NODE_HPP
 #define ERAGPSIM_ARCH_COMMON_ABSTRACT_REGISTER_NODE_HPP
 
+#include "arch/common/abstract-syntax-tree-node.hpp"
 
 /** A node that represents a register. */
 class RegisterNode : public AbstractSyntaxTreeNode {
@@ -59,10 +60,12 @@ class RegisterNode : public AbstractSyntaxTreeNode {
   /**
    * \return The identifier of the register.
    */
-  virtual std::string getIdentifier() {
+  virtual std::string getIdentifier() override {
     return _identifier;
   }
 
  private:
   std::string _identifier;
 };
+
+#endif

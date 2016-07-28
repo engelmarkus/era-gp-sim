@@ -31,11 +31,6 @@ class AbstractArithmeticOpNodeFactory {
   static constexpr int MULTIPLICATION = 3;
   static constexpr int DIVISION       = 4;
 
-  AbstractArithmeticOpNodeFactory() {
-  }
-
-  virtual ~AbstractArithmeticOpNodeFactory();
-
   /**
    * @brief createArithmeticOperationNode
    * Creates and returns an architecture-specific implementation of a

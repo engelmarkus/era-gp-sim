@@ -14,3 +14,13 @@
  *
  * You should have received a copy of the GNU General Public License
 * along with this program. If not, see <http://www.gnu.org/licenses/>.*/
+
+#include "arch/common/immediate-node.hpp"
+#include "arch/riscv/riscv-immediate-node-factory.hpp"
+
+using namespace riscv;
+
+std::unique_ptr<AbstractSyntaxTreeNode>
+ImmediateNodeFactory::createImmediateNode(MemoryValue &value) const {
+  return std::make_unique<ImmediateNode>(value);
+}

@@ -18,7 +18,7 @@
 #ifndef ERAGPSIM_ARCH_RISCV_INSTRUCTION_NODE_HPP_
 #define ERAGPSIM_ARCH_RISCV_INSTRUCTION_NODE_HPP_
 
-#include "arch/common/abstract-syntax-tree.hpp"
+#include "arch/common/abstract-syntax-tree-node.hpp"
 
 namespace riscv {
 

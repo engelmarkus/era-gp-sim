@@ -18,11 +18,11 @@
 #include <algorithm>
 #include <cctype>
 
-#include "arch/common/abstract-syntax-tree.hpp"
+#include "arch/common/abstract-syntax-tree-node.hpp"
 #include "arch/riscv/instruction-node.hpp"
 #include "arch/riscv/integer-instructions.hpp"
 #include "arch/riscv/load-store-instructions.hpp"
-#include "arch/riscv/riscv-node-factories.hpp"
+#include "arch/riscv/riscv-instruction-node-factory.hpp"
 
 using namespace riscv;
 
@@ -81,15 +81,4 @@ InstructionNodeFactory::createInstructionNode(
   } else {
     return nullptr; // return nullptr as the uppercase token could not be found
   }
-}
-
-std::unique_ptr<AbstractSyntaxTreeNode>
-ImmediateNodeFactory::createImmediateNode(MemoryValue &value) const {
-  return std::make_unique<ImmediateNode>(value);
-}
-
-std::unique_ptr<AbstractSyntaxTreeNode>
-RegisterAccessNodeFactory::createRegisterAccessNode(
-    const std::string &id) const {
-  return std::make_unique<RegisterNode>(id);
 }
