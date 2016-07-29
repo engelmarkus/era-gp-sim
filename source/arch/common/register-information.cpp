@@ -213,22 +213,22 @@ void RegisterInformation::_deserialize(InformationInterface::Format& data) {
   });
 
   Utility::doIfThere(data, "constituents", [this](auto& constituents) {
-    addConstituents(constituents);
+    this->addConstituents(constituents);
   });
 
   Utility::doIfThere(data, "constituent", [this](auto& constituent) {
-    addConstituent(constituent);
+    this->addConstituent(constituent);
   });
 
   // clang-format off
   Utility::doIfThere(data, "aliases", [this](auto& aliases) {
       for (const auto& alias : aliases) {
-        addAlias(alias);
+        this->addAlias(alias);
       }
   });
   // clang-format on
 
-  Utility::doIfThere(data, "alias", [this](auto& alias) { addAlias(alias); });
+  Utility::doIfThere(data, "alias", [this](auto& alias) { this->addAlias(alias); });
 }
 
 void RegisterInformation::_parseType(InformationInterface::Format& data) {

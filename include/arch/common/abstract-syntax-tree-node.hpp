@@ -18,6 +18,7 @@
 #ifndef ERAGPSIM_ARCH_COMMON_ABSTRACT_SYNTAX_TREE_NODE_HPP
 #define ERAGPSIM_ARCH_COMMON_ABSTRACT_SYNTAX_TREE_NODE_HPP
 
+#include <memory>
 #include <vector>
 
 class MemoryValue;
