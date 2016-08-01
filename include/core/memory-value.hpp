@@ -15,13 +15,106 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.*/
 
-#ifndef ERAGPSIM_CORE_MEMORYVALUE_H
-#define ERAGPSIM_CORE_MEMORYVALUE_H
+#ifndef ERAGPSIM_CORE_MEMORYVALUE_HPP
+#define ERAGPSIM_CORE_MEMORYVALUE_HPP
 
-#include <iostream>
+#include <cstddef>
+#include <cstdint>
 #include <vector>
 
-// Set of bits for in/out-putting to/from memory/registers
-class MemoryValue {};
+class MemoryValue {
+ public:
+  /**
+   * \brief Constructs an empty MemoryValue of default length, 1 byte á 8 bit
+   */
+  MemoryValue();
+  /**
+   * \brief Constructs an MemoryValue that acquires the data of other
+   * \param other
+   */
+  MemoryValue(MemoryValue &&other) = default;
+  /**
+   * \brief Constructs an MemoryValue that acquires the data of other
+   * \param other
+   */
+  MemoryValue &operator=(MemoryValue &&other) = default;
+  /**
+   * \brief Constructs an MemoryValue with a copy of the data of other
+   * \param other
+   */
+  MemoryValue(const MemoryValue &other) = default;
+  /**
+   * \brief Constructs an MemoryValue with a copy of the data of other
+   * \param other
+   */
+  MemoryValue &operator=(const MemoryValue &other) = default;
+  /**
+   * \brief Destroys the MemoryValue and invalidates also the references used
+   * for conversion
+   */
+  ~MemoryValue() = default;
+  /**
+   * \brief Constructs a MemoryValue with a copy of other and a
+   * byteSize of byteSize
+   * \param other
+   * \param byteSize
+   */
+  MemoryValue(const std::vector<uint8_t> &other, const std::size_t byteSize);
+  /**
+   * \brief Constructs an MemoryValue with other and a ByteSize of byteSize
+   * \param other
+   * \param byteSize
+   */
+  MemoryValue(std::vector<uint8_t> &&other, const std::size_t byteSize);
+  /**
+   * \brief Constructs a empty MemoryValue with byteAmount bytes of size
+   * byteSize
+   * \param byteAmount
+   * \param byteSize
+   */
+  MemoryValue(const size_t byteAmount, const size_t byteSize);
 
-#endif// ERAGPSIM_CORE_MEMORYVALUE_H
+  /**
+   * \brief returns the previous value at address
+   * \param address
+   * \return the value at address
+   */
+  bool get(const std::size_t address) const;
+  /**
+   * \brief sets the value at address to value and returns the previous value
+   * \param address
+   * \param value
+   * \return the previous value at address
+   */
+  bool set(const std::size_t, bool = true);
+  /**
+   * \brief sets the value at address to value
+   * \param address
+   * \param value
+   */
+  void put(const std::size_t, bool = true);
+
+  /**
+   * \brief returns the size of a single byte in the desired memory structure
+   * \return the size of a single byte in the desired memory structure
+   */
+  std::size_t getByteSize() const;
+  /**
+   * \brief returns the capacity of the MemoryValue in bit
+   * \return the capacity of the MemoryValue in bit
+   */
+  std::size_t getSize() const;
+  /**
+   * \brief returns the amount of bytes held by the MemoryValue
+   * \return the amount of bytes held by the MemoryValue
+   */
+  std::size_t getByteAmount() const;
+
+  /**
+   * \brief returns a reference to the data vector. For internal purposes only.
+   * Do not use or don't complain about crashes.
+   * \return a reference to the data vector
+   */
+  const std::vector<uint8_t> &internal() const;
+};
+#endif// ERAGPSIM_CORE_MEMORYVALUE_HPP
