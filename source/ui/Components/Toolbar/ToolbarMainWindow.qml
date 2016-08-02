@@ -17,19 +17,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
-  This ile implements the toolbar for the Main Window
- */
-
 import QtQuick 2.0
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.3
 import QtQuick.Controls.Styles 1.4
+import QtGraphicalEffects 1.0
 
 ToolBar {
-    /*
-      The two components are for the buttons, so it can be senn, wether they are pressed
-      */
+    // The two components are for the buttons, so it can be seen, whether they are pressed
     Component{
         id: styleNotClicked
         ButtonStyle{
@@ -39,7 +34,6 @@ ToolBar {
             }
         }
     }
-
     Component{
         id: styleClicked
         ButtonStyle{
@@ -50,54 +44,103 @@ ToolBar {
         }
     }
 
+
     /* Showing the Buttons*/
     RowLayout{
-        /*There should be no place between the right buttons*/
+        /*There should be no space between the right buttons*/
         spacing: 1
-        anchors.fill: parent        
+        anchors.fill: parent
 
+        // Run Button
         ToolButton{
-            id: run
-            //iconSource: "RunButtonWithBorder.svg"
-            iconSource: "Icons/RunButton.svg"
+            id: runButton
+            Image {
+                id: runButtonIcon
+                anchors.centerIn: parent
+                source: "Icons/RunButtonWithBorder.svg"
+                height: 22
+                fillMode: Image.PreserveAspectFit
+            }
+            // Tint button when clicked
+            ColorOverlay {
+                anchors.fill: runButtonIcon
+                source: runButtonIcon
+                color: runButton.pressed ? Qt.rgba(0.0, 0.0, 0.0, 0.2) : "#00000000"
+            }
             onClicked: {
                 console.info("Run clicked");
-                stop.setActive();
+                stopButton.setActive();
             }
         }
 
         /*Let space between the buttons*/
         Item{ width: 10}
 
+        // Run Line Button
         ToolButton{
-            id: runLine
-            //iconSource: "Icons/RunLineButtonWithBorder.svg"
-            iconSource: "Icons/RunLineButton.svg"
+            id: runLineButton
+            Image {
+                id: runLineButtonIcon
+                anchors.centerIn: parent
+                source: "Icons/RunLineButtonWithBorder.svg"
+                height: 22
+                fillMode: Image.PreserveAspectFit
+            }
+            // Tint button when clicked
+            ColorOverlay {
+                anchors.fill: runLineButtonIcon
+                source: runLineButtonIcon
+                color: runLineButton.pressed ? Qt.rgba(0.0, 0.0, 0.0, 0.2) : "#00000000"
+            }
             onClicked: {
                 console.info("runLine clicked");
-                stop.setActive();
+                stopButton.setActive();
             }
         }
 
         Item{ width: 10}
 
+        // Run Breakpoint Button
         ToolButton{
-            id: runBreakpoint
-            //iconSource: "Icons/RunBreakpointButtonWithBorder.svg"
-            iconSource: "Icons/RunBreakpointButton.svg"
+            id: runBreakpointButton
+            Image {
+                id: runBreakpointButtonIcon
+                anchors.centerIn: parent
+                source: "Icons/RunBreakpointButtonWithBorder.svg"
+                height: 22
+                fillMode: Image.PreserveAspectFit
+            }
+            // Tint button when clicked
+            ColorOverlay {
+                anchors.fill: runBreakpointButtonIcon
+                source: runBreakpointButtonIcon
+                color: runBreakpointButton.pressed ? Qt.rgba(0.0, 0.0, 0.0, 0.2) : "#00000000"
+            }
             onClicked: {
                 console.info("runBreakpoint clicked");
-                stop.setActive();
+                stopButton.setActive();
             }
         }
 
         Item{ width: 10}
 
+        // Stop Button
         ToolButton{
-            id: stop
+            id: stopButton
             enabled: false
-            //iconSource: "Icons/StopButtonInactiveWithBorder.svg"
-            iconSource: "Icons/StopButtonInactive.svg"
+            Image {
+                id: stopButtonIcon
+                anchors.centerIn: parent
+                source: "Icons/StopButtonInactiveWithBorder.svg"
+                height: 22
+                fillMode: Image.PreserveAspectFit
+            }
+            // Tint button when clicked
+            ColorOverlay {
+                anchors.fill: stopButtonIcon
+                source: stopButtonIcon
+                color: stopButton.pressed ? Qt.rgba(0.0, 0.0, 0.0, 0.2) : "#00000000"
+            }
             onClicked: {
                 console.info("Stop clicked");
                 setInactive();
@@ -112,14 +155,14 @@ ToolBar {
                 }
             }
 
+            // Adapts button appearance to whether it's enabled or disabled.
             function setActive(){
                 enabled=true;
-                iconSource="Icons/StopButtonActive.svg";
+                stopButtonIcon.source="Icons/StopButtonActiveWithBorder.svg";
             }
-
             function setInactive(){
                 enabled=false;
-                iconSource="Icons/StopButtonInactive.svg";
+                stopButtonIcon.source="Icons/StopButtonInactiveWithBorder.svg";
             }
         }
 
@@ -150,9 +193,7 @@ ToolBar {
             function notClicked(){
                 style=styleNotClicked;
             }
-
         }
-
 
         ToolButton{
             id: oct
@@ -175,8 +216,6 @@ ToolBar {
             function notClicked(){
                 style=styleNotClicked;
             }
-
-
         }
 
         ToolButton{
