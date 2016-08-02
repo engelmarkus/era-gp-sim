@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="57px" height="53px" viewBox="0 0 57 53" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 39.1 (31720) - http://www.bohemiancoding.com/sketch -->
+    <title>SnapshotIcon</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0.459383753" y="12.5902335" width="56" height="40" rx="1"></rect>
+        <mask id="mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="56" height="40" fill="white">
+            <use xlink:href="#path-1"></use>
+        </mask>
+    </defs>
+    <g id="Snapshot-Icon" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="SnapshotIcon">
+            <use id="Rectangle-70" stroke="#4A4A4A" mask="url(#mask-2)" stroke-width="13" xlink:href="#path-1"></use>
+            <circle id="Oval-22" stroke="#4A4A4A" stroke-width="6.5" cx="28.4593838" cy="32.5902335" r="8"></circle>
+            <path d="M13,10.0600004 L42.9718808,10.0574701 L38.0889566,0 L18.1739133,0.204324979 L13,10.0600004 Z" id="Path-69" fill="#4A4A4A"></path>
+        </g>
+    </g>
+</svg>

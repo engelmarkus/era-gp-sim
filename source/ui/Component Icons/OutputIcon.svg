@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="61px" height="42px" viewBox="0 0 61 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 39.1 (31720) - http://www.bohemiancoding.com/sketch -->
+    <title>OutputIcon</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="41.8604651" height="41.8604651" rx="2"></rect>
+        <mask id="mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="41.8604651" height="41.8604651" fill="white">
+            <use xlink:href="#path-1"></use>
+        </mask>
+    </defs>
+    <g id="Output-Icon" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="OutputIcon">
+            <use id="Rectangle-2" stroke="#4A4A4A" mask="url(#mask-2)" stroke-width="8" xlink:href="#path-1"></use>
+            <g id="Group" transform="translate(18.139535, 12.558140)" fill="#4A4A4A">
+                <rect id="Rectangle-3" x="0" y="4.18604651" width="30.4439746" height="8.37209302"></rect>
+                <polygon id="Triangle" transform="translate(35.517970, 8.372093) rotate(90.000000) translate(-35.517970, -8.372093) " points="35.5179704 1.39534884 43.1289641 15.3488372 27.9069767 15.3488372"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>
