@@ -32,11 +32,13 @@ ApplicationWindow {
     width: 750
     height: 500
 
+    // Color definitions
     property color activeTabColor: "white"
     property color tabBarColor: Qt.rgba(236.0/255.0, 236.0/255.0, 236.0/255.0, 1.0)
     property color componentBackgroundColor: Qt.rgba(242.0/255.0, 242.0/255.0, 242.0/255.0, 1.0)
     property color titleColor: "#666666"
-    property color titleColorHighlighted: "444444"
+    property color titleColorHighlighted: "#444444"
+
     style: ApplicationWindowStyle {
         // The windows background color is visible through a small gap between the
         // tabView's tabBar and the split view. It's set to white to align with
@@ -48,6 +50,7 @@ ApplicationWindow {
         component: tabs
         tabView: tabView
     }
+
     toolBar: ToolbarMainWindow{
         id: toolbar
     }
