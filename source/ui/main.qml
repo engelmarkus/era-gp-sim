@@ -82,7 +82,7 @@ ApplicationWindow {
                 // Creates a black border between tab bar and the active tab window
                 Rectangle {
                     anchors.top: parent.top
-                    anchors.horizontalCenter: parent
+                    anchors.horizontalCenter: parent.horizontalCenter
                     width: parent.width
                     height: 1
                     color: "#9E9E9E"
