@@ -27,6 +27,10 @@ import "Components/Toolbar"
 ApplicationWindow {
     id: window
     visible: true
+    // Set default window size
+    width: 750
+    height: 500
+
 
     menuBar: Menubar{
         component: tabs
