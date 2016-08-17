@@ -14,17 +14,27 @@
  *
  * You should have received a copy of the GNU General Public License
 * along with this program. If not, see <http://www.gnu.org/licenses/>.*/
+#ifndef ERAGPSIM_ARCH_RISCV_CONVERSIONSTUB_HPP
+#define ERAGPSIM_ARCH_RISCV_CONVERSIONSTUB_HPP
 
-#include <memory>
-#include <string>
+#include "core/memory-value.hpp"
 
-#include "arch/riscv/immediate-node-factory.hpp"
-#include "arch/common/immediate-node.hpp"
+enum class ByteOrder {
+  kBigEndian,
+  kLittleEndian
+};
 
-namespace riscv {
-
-ImmediateNodeFactory::Node
-ImmediateNodeFactory::createImmediateNode(const MemoryValue &value) const {
-   return std::make_unique<ImmediateNode>(value);
+// Stub implementation, used in arch/riscv/integer-instructions
+//this can be replaced/removed at any time
+template <typename T>
+typename std::enable_if<std::is_integral<T>::value, T>::type
+convert(const MemoryValue& memoryValue, ByteOrder byteOrder) {
+    return T(0);
 }
+template <typename T>
+typename std::enable_if<std::is_integral<T>::value, MemoryValue>::type
+convert(T value, std::size_t bitsPerByte, ByteOrder byteOrder,
+std::size_t byteCount = 0) {
+    return MemoryValue();
 }
+#endif // ERAGPSIM_ARCH_RISCV_CONVERSIONSTUB_HPP
