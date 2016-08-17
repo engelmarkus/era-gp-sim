@@ -20,7 +20,7 @@
 
 #include <memory>
 #include <string>
-#include <vector>
+#include <QtGlobal>
 
 #include "arch/common/abstract-syntax-tree-node.hpp"
 #include "core/memory-value.hpp"
@@ -48,9 +48,13 @@ class ImmediateNode : public AbstractSyntaxTreeNode {
   /**
    * \return true, if there are no children.
    */
-  bool validate() const override {
+  const ValidationResult validate() const override {
     // Immediate values can't have any children
-    return AbstractSyntaxTreeNode::_children.size() == 0;
+    return AbstractSyntaxTreeNode::_children.size() == 0
+               ? ValidationResult::success()
+               : ValidationResult::fail(QT_TRANSLATE_NOOP(
+                     "Syntax-Tree-Validation",
+                     "The immediate node must not have any children"));
   }
 
   /**
@@ -64,7 +68,6 @@ class ImmediateNode : public AbstractSyntaxTreeNode {
    *
    * \return The string "imm"
    */
-
   const std::string& getIdentifier() const override {
     return IMMEDIATE_IDENTIFIER;
   }

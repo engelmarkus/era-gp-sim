@@ -16,7 +16,7 @@ include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag("-std=c++14" COMPILER_SUPPORTS_CXX_14)
 
 if (COMPILER_SUPPORTS_CXX_14)
-   add_compile_options(-std=c++14)
+   set(CMAKE_CXX_STANDARD 14)
 else()
  message(FATAL_ERROR "21st century, anyone?")
 endif()
@@ -28,6 +28,12 @@ endif()
 # For third-party includes (need relative to root)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+########################################
+# DEPENDENCIES
+########################################
+
+find_package(Qt5Widgets REQUIRED)
 
 ########################################
 # SUBDIRECTORIES

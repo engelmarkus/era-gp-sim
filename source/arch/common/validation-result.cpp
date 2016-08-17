@@ -20,7 +20,7 @@
 #include "arch/common/validation-result.hpp"
 
 const ValidationResult ValidationResult::success() {
-    return ValidationResult;
+    return ValidationResult{""};
 }
 
 const ValidationResult ValidationResult::fail(std::string message) {
@@ -28,12 +28,12 @@ const ValidationResult ValidationResult::fail(std::string message) {
 }
 
 bool ValidationResult::isSuccess() const {
-    return message.size() == 0;
+    return _message.size() == 0;
 }
 
-const std::string& getMessage() const {
-    return message;
+const std::string& ValidationResult::getMessage() const {
+    return _message;
 }
 
-ValidationResult(std::string message) : _message(message) {
+ValidationResult::ValidationResult(std::string message) : _message(message) {
 }

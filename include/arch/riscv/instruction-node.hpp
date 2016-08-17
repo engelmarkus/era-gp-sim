@@ -38,7 +38,7 @@ class InstructionNode : public AbstractSyntaxTreeNode {
   /* Ensure this class is also pure virtual */
   virtual MemoryValue getValue(
       DummyMemoryAccess& memory_access) const override = 0;
-  virtual bool validate() const override = 0;
+  virtual const ValidationResult validate() const override = 0;
 
   MemoryValue assemble() const override;
 

@@ -55,7 +55,7 @@ class ValidationResult {
       * empty, if the validation succeeded.
       * \return The message of the validation or empty, if validation succeeded.
       */
-     const std::string& getMessage(); const;
+     const std::string& getMessage() const;
 
     private:
      ValidationResult(std::string message);

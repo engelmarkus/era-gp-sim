@@ -22,6 +22,7 @@
 #include <string>
 #include <vector>
 
+#include "arch/common/validation-result.hpp"
 #include "core/memory-value.hpp"
 
 //Dummy definition of a memory-access
@@ -67,7 +68,7 @@ class AbstractSyntaxTreeNode {
    *
    * \return Whether this syntax tree is valid for execution.
    */
-  virtual bool validate() const = 0;
+  virtual const ValidationResult validate() const = 0;
 
   /**
    * Assembles this syntax tree into its binary representation. So, this
@@ -102,17 +103,19 @@ class AbstractSyntaxTreeNode {
   void addChild(Node node) {
     _children.push_back(std::move(node));
   }
+
   /**
    * Calls validate() on all children
    * \return true, if all children return true, otherwise false
    */
-  bool validateAllChildren() const {
+  const ValidationResult validateAllChildren() const {
       for(auto &child : _children) {
-          if(!child->validate()) {
-              return false;
+          ValidationResult result = child->validate();
+          if(!result.isSuccess()) {
+              return result;
           }
       }
-      return true;
+      return ValidationResult::success();
   }
 
  protected:

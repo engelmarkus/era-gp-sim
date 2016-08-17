@@ -22,6 +22,7 @@
 
 #include <cassert>
 #include <string>
+#include <QtGlobal>
 
 #include "arch/common/instruction-information.hpp"
 #include "arch/riscv/instruction-node.hpp"
@@ -67,7 +68,7 @@ class IntegerInstructionNode : public InstructionNode {
   ~IntegerInstructionNode() = default;
 
   MemoryValue getValue(DummyMemoryAccess& memory_access) const override {
-    assert(validate());
+    assert(validate().isSuccess());
     // Get the destination register
     std::string destination = _children.at(0)->getIdentifier();
 
@@ -86,47 +87,64 @@ class IntegerInstructionNode : public InstructionNode {
     return MemoryValue{};
   }
 
-  bool validate() const override {
+  const ValidationResult validate() const override {
     // a integer instruction needs exactly 3 operands
     if (_children.size() != 3) {
-      return false;
+      return ValidationResult::fail(QT_TRANSLATE_NOOP(
+          "Syntax-Tree-Validation",
+          "Integer instructions must have exactly 3 children"));
     }
     // check if all operands are valid themselves
-    if (!validateAllChildren()) {
-      return false;
+    ValidationResult resultAll = validateAllChildren();
+    if (!resultAll.isSuccess()) {
+      return resultAll;
     }
 
     if (_isImmediate &&
         _children.at(2)->getType() == AbstractSyntaxTreeNode::Type::IMMEDIATE) {
-      // check if immediate operand is represented by only 20 bits
+      // check if immediate operand is represented by only 12 bits
       DummyMemoryAccessStub stub;
       // no memory access is needed for a immediate node
       MemoryValue value = _children.at(2)->getValue(stub);
-      //look for 1 in bits 20...value.getSize()
-      for(std::size_t index = 20; index < value.getByteSize(); ++index) {
-          if(value.get(index)) {
-              return false;//1 detected
+      //look for 1 in bits 12...value.getSize()
+      for (std::size_t index = 12; index < value.getByteSize(); ++index) {
+        if (value.get(index)) {
+          // 1 detected
+          return ValidationResult::fail(QT_TRANSLATE_NOOP(
+              "Syntax-Tree-Validation",
+              "The immediate value must be representable by 12 bits"));
           }
       }
 //      auto bits20 = value.getValue() & (~0xFFFFF);  // 2097151 = 0b11111...1 (20
 //                                                    // times a 1) -> erase lower
 //                                                    // 20 bits
-//      if (value != lower20bit) {
-//        // there is a 1 somewhere in bit 20 to x => the value is not represented
-//        // by only bit 0...19
-//        return false;
-//      }
+      //      if (value != lower20bit) {
+      //        // there is a 1 somewhere in bit 20 to x => the value is not
+      //        represented
+      //        // by only bit 0...19
+      //        return false;
+      //      }
     }
 
     // a immediate integer instruction needs two register operands followed by
     // one immediate operand
     if (_isImmediate) {
-      return requireChildren(AbstractSyntaxTreeNode::Type::REGISTER, 0, 2) &&
-             requireChildren(AbstractSyntaxTreeNode::Type::IMMEDIATE, 2, 1);
+      if (!requireChildren(AbstractSyntaxTreeNode::Type::REGISTER, 0, 2) ||
+          !requireChildren(AbstractSyntaxTreeNode::Type::IMMEDIATE, 3, 1)) {
+        return ValidationResult::fail(
+            QT_TRANSLATE_NOOP("Syntax-Tree-Validation",
+                              "The immediate-integer instructions must have 2 "
+                              "registers and 1 immediate"));
+      }
     } else {
       // a register integer instruction needs three register operands
-      return requireChildren(AbstractSyntaxTreeNode::Type::REGISTER, 0, 3);
+      if (!requireChildren(AbstractSyntaxTreeNode::Type::REGISTER, 0, 3)) {
+        return ValidationResult::fail(QT_TRANSLATE_NOOP(
+            "Syntax-Tree-Validation",
+            "The register-integer instructions must have 3 registers"));
+      }
     }
+    return ValidationResult::success();
   }
 
   /*!
