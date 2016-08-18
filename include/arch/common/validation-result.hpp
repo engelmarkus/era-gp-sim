@@ -27,40 +27,40 @@
  */
 class ValidationResult {
  public:
-     /**
-      * Creates a new ValidationResult object that indicates, that the
-      * validation succeded.
-      */
-     static const ValidationResult success();
+  /**
+   * Creates a new ValidationResult object that indicates, that the
+   * validation succeded.
+   */
+  static const ValidationResult success();
 
-     /**
-      * Creates a new ValidationResult object that indicates, that the
-      * validation failed. A message, describing the problem, must be
-      * given. Note, that an empty message acts like a call to
-      * ValidationResult::success().
-      *
-      * \param message The message indicating the problem. Should be empty.
-      */
-     static const ValidationResult fail(std::string message);
+  /**
+   * Creates a new ValidationResult object that indicates, that the
+   * validation failed. A message, describing the problem, should be
+   * given.
+   *
+   * \param message The message indicating the problem. Should not be empty.
+   */
+  static const ValidationResult fail(std::string message);
 
-     /**
-      * Check if this validation result indicates, that the validation
-      * succeeded.
-      * \return true if validation succeeded.
-      */
-     bool isSuccess() const;
+  /**
+   * Check if this validation result indicates, that the validation
+   * succeeded.
+   * \return true if validation succeeded.
+   */
+  bool isSuccess() const;
 
-     /**
-      * Returns the message, that describes the validation result. The string is
-      * empty, if the validation succeeded.
-      * \return The message of the validation or empty, if validation succeeded.
-      */
-     const std::string& getMessage() const;
+  /**
+   * Returns the message, that describes the validation result. The string is
+   * empty, if the validation succeeded.
+   * \return The message of the validation.
+   */
+  const std::string& getMessage() const;
 
-    private:
-     ValidationResult(std::string message);
+ private:
+  ValidationResult(bool success, std::string message);
 
-     std::string _message;
+  bool _success;
+  std::string _message;
 };
 
 #endif /* ERAGPSIM_ARCH_COMMON_VALIDATION_RESULT_HPP_ */
