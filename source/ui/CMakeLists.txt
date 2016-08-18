@@ -21,6 +21,12 @@ set(UI_HEADERS
     ../../include/ui/editor-component.hpp
 )
 
+########################################
+# EXECUTABLE
+########################################
+
+# See http://doc.qt.io/qt-5/cmake-manual.html for reference
+# about the used Qt5 CMake Makros
 qt5_add_resources(UI_RESOURCES qml.qrc)
 qt5_wrap_cpp(UI_HEADERS_WRAPPED ${UI_HEADERS})
 
