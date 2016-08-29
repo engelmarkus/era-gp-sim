@@ -29,8 +29,8 @@ ApplicationWindow {
     id: window
     visible: true
     // Set default window size
-    width: 750
-    height: 500
+    width: Screen.desktopAvailableWidth*0.7
+    height: Screen.desktopAvailableHeight*0.7
 
     // Color definitions
     property color activeTabColor: "white"
