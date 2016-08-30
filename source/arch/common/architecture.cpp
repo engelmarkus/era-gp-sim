@@ -91,6 +91,11 @@ Architecture::word_size_t Architecture::getWordSize() const {
   return _base.getWordSize();
 }
 
+Architecture::byte_size_t Architecture::getByteSize() const noexcept {
+  assert(isValidated());
+  return _base.getByteSize();
+}
+
 const UnitContainer& Architecture::getUnits() const {
   assert(isValidated());
   return _base.getUnits();
