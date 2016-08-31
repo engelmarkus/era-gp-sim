@@ -327,7 +327,7 @@ TEST(IntegerInstructionTest, ADDInstruction_testAdd64) {
   TEST_RR(1, to64BitMemoryValue, "add", 1, 41, 42);
   // test 64bit (unsigned) boundary: (2^64 -1) +1 = 18446744073709551615 + 1 = 0
   TEST_RR(2, to64BitMemoryValue, "add", UINT64_C(0xFFFFFFFFFFFFFFFF), 1, 0);
-  TEST_RR(3, to64BitMemoryValue, "add", 1, 0xFFFFFFFFFFFFFFFFULL, 0);
+  TEST_RR(3, to64BitMemoryValue, "add", 1, UINT64_C(0xFFFFFFFFFFFFFFFF), 0);
 }
 
 TEST(IntegerInstructionTest, ADDInstruction_testAddi32) {
@@ -360,7 +360,7 @@ TEST(IntegerInstructionTest, ADDInstruction_testAddi64) {
   TEST_RI(0, to64BitMemoryValue, "addi", 41, 1, 42);
   TEST_RI(1, to64BitMemoryValue, "addi", 1, 41, 42);
   // test 64bit (unsigned) boundary: (2^64 -1) +1 = 18446744073709551615 + 1 = 0
-  TEST_RI(2, to64BitMemoryValue, "addi", 0xFFFFFFFFFFFFFFFFULL, 1, 0);
+  TEST_RI(2, to64BitMemoryValue, "addi", UINT64_C(0xFFFFFFFFFFFFFFFF), 1, 0);
   // test immediate boundary
   test20BitImmediateBounds(instructionFactory, "addi", immediateFactory);
 }
@@ -402,7 +402,7 @@ TEST(IntegerInstructionTest, SUBInstruction_testSub64) {
 
   TEST_RR(0, to64BitMemoryValue, "sub", 43, 1, 42);
   // test 64bit (unsigned) boundary: 0-1 = (2^64 -1) = 18446744073709551615
-  TEST_RR(1, to64BitMemoryValue, "sub", 0, 1, 0xFFFFFFFFFFFFFFFFULL);
+  TEST_RR(1, to64BitMemoryValue, "sub", 0, 1, UINT64_C(0xFFFFFFFFFFFFFFFF));
 }
 
 TEST(IntegerInstructionTest, SUBInstruction_testValidation) {
@@ -442,26 +442,26 @@ TEST(IntegerInstructionTest, ANDInstruction_testAnd64) {
   TEST_RR(0,
           to64BitMemoryValue,
           "and",
-          UINT64_C(0b110110) << 32,
-          UINT64_C(0b100100) << 32,
-          UINT64_C(0b100100) << 32);
+          INT64_C(0b110110) << 32,
+          INT64_C(0b100100) << 32,
+          INT64_C(0b100100) << 32);
   TEST_RR(1,
           to64BitMemoryValue,
           "and",
-          UINT64_C(0b100100) << 32,
-          UINT64_C(0b110110) << 32,
-          UINT64_C(0b100100) << 32);
+          INT64_C(0b100100) << 32,
+          INT64_C(0b110110) << 32,
+          INT64_C(0b100100) << 32);
   TEST_RR(2,
           to64BitMemoryValue,
           "and",
-          UINT64_C(0b101010) << 32,
-          UINT64_C(0b010101) << 32,
+          INT64_C(0b101010) << 32,
+          INT64_C(0b010101) << 32,
           0);
   TEST_RR(3,
           to64BitMemoryValue,
           "and",
-          UINT64_C(0b010101) << 32,
-          UINT64_C(0b101010) << 32,
+          INT64_C(0b010101) << 32,
+          INT64_C(0b101010) << 32,
           0);
 }
 
@@ -496,13 +496,13 @@ TEST(IntegerInstructionTest, ANDInstruction_testAndi64) {
   // it is difficult to test 64bit version, because immediate values cannot be
   // greater than 20bit
   // therefore no upper 32bit testing can be done, except for testing against 0
-  TEST_RI(0, to64BitMemoryValue, "andi", UINT64_C(0b110110) << 32, 0b100100, 0);
+  TEST_RI(0, to64BitMemoryValue, "andi", INT64_C(0b110110) << 32, 0b100100, 0);
   TEST_RI(1,
           to64BitMemoryValue,
           "andi",
-          UINT64_C(0b100100),
-          UINT64_C(0b110110),
-          UINT64_C(0b100100));
+          INT64_C(0b100100),
+          INT64_C(0b110110),
+          INT64_C(0b100100));
 
   // test immediate boundary
   test20BitImmediateBounds(instructionFactory, "andi", immediateFactory);
@@ -547,27 +547,27 @@ TEST(IntegerInstructionTest, ORINstruction_testOr64) {
   TEST_RR(0,
           to64BitMemoryValue,
           "or",
-          UINT64_C(0b110110) << 32,
-          UINT64_C(0b100100) << 32,
-          UINT64_C(0b110110) << 32);
+          INT64_C(0b110110) << 32,
+          INT64_C(0b100100) << 32,
+          INT64_C(0b110110) << 32);
   TEST_RR(1,
           to64BitMemoryValue,
           "or",
-          UINT64_C(0b100100) << 32,
-          UINT64_C(0b110110) << 32,
-          UINT64_C(0b110110) << 32);
+          INT64_C(0b100100) << 32,
+          INT64_C(0b110110) << 32,
+          INT64_C(0b110110) << 32);
   TEST_RR(2,
           to64BitMemoryValue,
           "or",
-          UINT64_C(0b101010) << 32,
-          UINT64_C(0b010101) << 32,
-          UINT64_C(0b111111) << 32);
+          INT64_C(0b101010) << 32,
+          INT64_C(0b010101) << 32,
+          INT64_C(0b111111) << 32);
   TEST_RR(3,
           to64BitMemoryValue,
           "or",
-          UINT64_C(0b010101) << 32,
-          UINT64_C(0b101010) << 32,
-          UINT64_C(0b111111) << 32);
+          INT64_C(0b010101) << 32,
+          INT64_C(0b101010) << 32,
+          INT64_C(0b111111) << 32);
 }
 
 TEST(IntegerInstructionTest, ORInstruction_testOri32) {
@@ -600,9 +600,9 @@ TEST(IntegerInstructionTest, ORInstruction_testOri64) {
   TEST_RI(0,
           to64BitMemoryValue,
           "ori",
-          (UINT64_C(0b1010110) << 32),
+          (INT64_C(0b1010110) << 32),
           0b10,
-          ((UINT64_C(0b1010110) << 32) + 2));
+          ((INT64_C(0b1010110) << 32) + 2));
   // test immediate boundary
   test20BitImmediateBounds(instructionFactory, "ori", immediateFactory);
 }
@@ -645,27 +645,27 @@ TEST(IntegerInstructionTest, XORInstruction_testXor64) {
   TEST_RR(0,
           to64BitMemoryValue,
           "xor",
-          UINT64_C(0b110110) << 32,
-          UINT64_C(0b100100) << 32,
-          UINT64_C(0b010010) << 32);
+          INT64_C(0b110110) << 32,
+          INT64_C(0b100100) << 32,
+          INT64_C(0b010010) << 32);
   TEST_RR(1,
           to64BitMemoryValue,
           "xor",
-          UINT64_C(0b100100) << 32,
-          UINT64_C(0b110110) << 32,
-          UINT64_C(0b010010) << 32);
+          INT64_C(0b100100) << 32,
+          INT64_C(0b110110) << 32,
+          INT64_C(0b010010) << 32);
   TEST_RR(2,
           to64BitMemoryValue,
           "xor",
-          UINT64_C(0b101010) << 32,
-          UINT64_C(0b010101) << 32,
-          UINT64_C(0b111111) << 32);
+          INT64_C(0b101010) << 32,
+          INT64_C(0b010101) << 32,
+          INT64_C(0b111111) << 32);
   TEST_RR(3,
           to64BitMemoryValue,
           "xor",
-          UINT64_C(0b010101) << 32,
-          UINT64_C(0b101010) << 32,
-          UINT64_C(0b111111) << 32);
+          INT64_C(0b010101) << 32,
+          INT64_C(0b101010) << 32,
+          INT64_C(0b111111) << 32);
 }
 
 TEST(IntegerInstructionTest, XORInstruction_testXori32) {
@@ -699,9 +699,9 @@ TEST(IntegerInstructionTest, XORInstruction_testXori64) {
   TEST_RI(0,
           to64BitMemoryValue,
           "xori",
-          (UINT64_C(0b100000001010110) << 18),
-          (UINT64_C(0b10) << 18),
-          (UINT64_C(0b100000001010100) << 18));
+          (INT64_C(0b100000001010110) << 18),
+          (INT64_C(0b10) << 18),
+          (INT64_C(0b100000001010100) << 18));
   // test immediate boundary
   test20BitImmediateBounds(instructionFactory, "xori", immediateFactory);
 }
@@ -744,11 +744,11 @@ TEST(IntegerInstructionTest, ShiftLeftInstruction_testSll64) {
   TEST_RR(0,
           to64BitMemoryValue,
           "sll",
-          UINT64_C(0b110110) << 32,
+          INT64_C(0b110110) << 32,
           3,
-          UINT64_C(0b110110000) << 32);
+          INT64_C(0b110110000) << 32);
   // shifts use only the lower 5bit of the second operand
-  TEST_RR(1, to64BitMemoryValue, "sll", 3, UINT64_C(0b110110) << 32, 3);
+  TEST_RR(1, to64BitMemoryValue, "sll", 3, INT64_C(0b110110) << 32, 3);
 }
 
 TEST(IntegerInstructionTest, ShiftLeftInstruction_testSlli32) {
@@ -780,16 +780,16 @@ TEST(IntegerInstructionTest, ShiftLeftInstruction_testSlli64) {
   TEST_RI(0,
           to64BitMemoryValue,
           "slli",
-          (UINT64_C(0b110110) << 32),
+          (INT64_C(0b110110) << 32),
           3,
-          (UINT64_C(0b110110000) << 32));
+          (INT64_C(0b110110000) << 32));
   // shifts use only the lower 5bit of the second operand
   TEST_RI(1,
           to64BitMemoryValue,
           "slli",
-          (UINT64_C(0b1) << 32),
+          (INT64_C(0b1) << 32),
           0b11100001,
-          UINT64_C(0b10) << 32);
+          INT64_C(0b10) << 32);
   // test immediate boundary
   test20BitImmediateBounds(instructionFactory, "slli", immediateFactory);
 }
@@ -832,11 +832,11 @@ TEST(IntegerInstructionTest, ShiftRightInstruction_testSrl64) {
   TEST_RR(0,
           to64BitMemoryValue,
           "srl",
-          UINT64_C(0b110110) << 32,
+          INT64_C(0b110110) << 32,
           3,
-          UINT64_C(0b110110) << 29);
+          INT64_C(0b110110) << 29);
   // shifts use only the lower 5bit of the second operand
-  TEST_RR(1, to64BitMemoryValue, "srl", 3, UINT64_C(0b110110) << 32, 3);
+  TEST_RR(1, to64BitMemoryValue, "srl", 3, INT64_C(0b110110) << 32, 3);
 }
 
 TEST(IntegerInstructionTest, ShiftRightInstruction_testSrli32) {
@@ -868,16 +868,16 @@ TEST(IntegerInstructionTest, ShiftRightInstruction_testSrli64) {
   TEST_RI(0,
           to64BitMemoryValue,
           "srli",
-          UINT64_C(0b110110) << 32,
+          INT64_C(0b110110) << 32,
           3,
-          UINT64_C(0b110110) << 29);
+          INT64_C(0b110110) << 29);
   // shifts use only the lower 5bit of the second operand
   TEST_RI(1,
           to64BitMemoryValue,
           "srli",
-          UINT64_C(0b11) << 32,
+          INT64_C(0b11) << 32,
           0b11100001,
-          UINT64_C(0b11) << 31);
+          INT64_C(0b11) << 31);
   // test immediate boundary
   test20BitImmediateBounds(instructionFactory, "srli", immediateFactory);
 }
@@ -927,10 +927,10 @@ TEST(IntegerInstructionTest, ShiftRightArithmeticInstruction_testSra64) {
       0,
       to64BitMemoryValue,
       "sra",
-      UINT64_C(
+      INT64_C(
           0b1000000000000000000000000001101100000000000000000000000000000000),
       3,
-      UINT64_C(
+      INT64_C(
           0b1111000000000000000000000000001101100000000000000000000000000000));
   // shifts use only the lower 5bit of the second operand
   TEST_RR(
@@ -938,7 +938,7 @@ TEST(IntegerInstructionTest, ShiftRightArithmeticInstruction_testSra64) {
       to64BitMemoryValue,
       "sra",
       3,
-      UINT64_C(
+      INT64_C(
           0b1000000000000000000000000001101100000000000000000000000000000000),
       3);
 }
@@ -984,18 +984,18 @@ TEST(IntegerInstructionTest, ShiftRightInstruction_testSrai64) {
       0,
       to64BitMemoryValue,
       "srai",
-      UINT64_C(
+      INT64_C(
           0b1000000000000000000000000001101100000000000000000000000000000000),
       3,
-      UINT64_C(
+      INT64_C(
           0b1111000000000000000000000000001101100000000000000000000000000000));
   // shifts use only the lower 5bit of the second operand
   TEST_RI(1,
           to64BitMemoryValue,
           "srai",
-          UINT64_C(0b11) << 32,
+          INT64_C(0b11) << 32,
           0b11100001,
-          UINT64_C(0b11) << 31);
+          INT64_C(0b11) << 31);
   // test immediate boundary
   test20BitImmediateBounds(instructionFactory, "srai", immediateFactory);
 }
