@@ -34,20 +34,30 @@ using namespace riscv;
 namespace {
 template <typename IntType>
 MemoryValue convertToMem(IntType t) {
-  return convert<IntType>(t, InstructionNode::RISCV_BITS_PER_BYTE,
+  return convert<IntType>(t,
+                          InstructionNode::RISCV_BITS_PER_BYTE,
                           InstructionNode::RISCV_ENDIANNESS);
 }
 
 class FakeRegister {
  public:
-  FakeRegister() : FakeRegister(0) {}
-  FakeRegister(uint64_t value) : _value(convertToMem<uint64_t>(value)) {}
-  FakeRegister(MemoryValue& v) : _value(v) {}
+  FakeRegister() : FakeRegister(0) {
+  }
+  FakeRegister(uint64_t value) : _value(convertToMem<uint64_t>(value)) {
+  }
+  FakeRegister(MemoryValue& v) : _value(v) {
+  }
 
-  void set(uint64_t newValue) { _value = convertToMem<uint64_t>(newValue); }
-  void set(MemoryValue& v) { _value = v; }
+  void set(uint64_t newValue) {
+    _value = convertToMem<uint64_t>(newValue);
+  }
+  void set(MemoryValue& v) {
+    _value = v;
+  }
 
-  MemoryValue get() { return _value; }
+  MemoryValue get() {
+    return _value;
+  }
 
  private:
   MemoryValue _value;
@@ -64,15 +74,20 @@ MemoryValue to64BitMemoryValue(uint64_t value) {
 class FakeRegisterNode : public RegisterNode {
  public:
   explicit FakeRegisterNode(std::string& regId)
-      : RegisterNode(regId), _id(regId) {}
+  : RegisterNode(regId), _id(regId) {
+  }
 
   MemoryValue getValue(DummyMemoryAccess& access) const override {
     return access.getRegisterValue(_id);
   }
 
-  MemoryValue assemble() const override { return MemoryValue{}; }
+  MemoryValue assemble() const override {
+    return MemoryValue{};
+  }
 
-  const std::string& getIdentifier() const override { return _id; }
+  const std::string& getIdentifier() const override {
+    return _id;
+  }
 
  private:
   std::string& _id;
@@ -96,11 +111,11 @@ class DummyMemoryAccessImpl : public DummyMemoryAccess {
   std::unordered_map<std::string, FakeRegister&> _register;
 };
 
-InstructionNodeFactory setUpFactory(
-    ArchitectureFormula::InitializerList modules =
-        ArchitectureFormula::InitializerList()) {
+InstructionNodeFactory
+setUpFactory(ArchitectureFormula::InitializerList modules =
+                 ArchitectureFormula::InitializerList()) {
   auto formula = ArchitectureFormula("riscv", modules);
-  auto riscv = Architecture::Brew(formula);
+  auto riscv   = Architecture::Brew(formula);
   return InstructionNodeFactory(riscv.getInstructions(), riscv);
 }
 
@@ -163,8 +178,8 @@ void test20BitImmediateBounds(InstructionNodeFactory& instrF,
                               std::string instructionToken,
                               ImmediateNodeFactory& immF) {
   constexpr uint64_t boundary = 0xFFFFF;
-  std::string registerId = "not relevant";
-  auto node = instrF.createInstructionNode(instructionToken);
+  std::string registerId      = "not relevant";
+  auto node                   = instrF.createInstructionNode(instructionToken);
   node->addChild(std::move(std::make_unique<FakeRegisterNode>(registerId)));
   node->addChild(std::move(std::make_unique<FakeRegisterNode>(registerId)));
   auto immediateNodeIn =
@@ -201,8 +216,8 @@ void test20BitImmediateBounds(InstructionNodeFactory& instrF,
  * \param operand2 second operand value (as literal)
  * \param result expected result of the operation (as literal)
   */
-#define TEST_RR(contextNbr, memoryValueConverter, instruction, operand1,       \
-                operand2, result)                                              \
+#define TEST_RR(                                                               \
+    contextNbr, memoryValueConverter, instruction, operand1, operand2, result) \
   /* Put operand values into register */                                       \
   memoryAccess.setRegisterValue(op1, memoryValueConverter(operand1));          \
   memoryAccess.setRegisterValue(op2, memoryValueConverter(operand2));          \
@@ -251,8 +266,8 @@ void test20BitImmediateBounds(InstructionNodeFactory& instrF,
  * \param operand2 second operand value (as literal)
  * \param result expected result of the operation (as literal)
   */
-#define TEST_RI(contextNbr, memoryValueConverter, instruction, operand1,       \
-                operand2, result)                                              \
+#define TEST_RI(                                                               \
+    contextNbr, memoryValueConverter, instruction, operand1, operand2, result) \
   memoryAccess.setRegisterValue(reg, memoryValueConverter(operand1));          \
   /* Assemble instruction node with destination, operand & immediate node*/    \
   auto cmd_##contextNbr =                                                      \
@@ -311,7 +326,7 @@ TEST(IntegerInstructionTest, ADDInstruction_testAdd64) {
   TEST_RR(0, to64BitMemoryValue, "add", 41, 1, 42);
   TEST_RR(1, to64BitMemoryValue, "add", 1, 41, 42);
   // test 64bit (unsigned) boundary: (2^64 -1) +1 = 18446744073709551615 + 1 = 0
-  TEST_RR(2, to64BitMemoryValue, "add", 0xFFFFFFFFFFFFFFFFULL, 1, 0);
+  TEST_RR(2, to64BitMemoryValue, "add", UINT64_C(0xFFFFFFFFFFFFFFFF), 1, 0);
   TEST_RR(3, to64BitMemoryValue, "add", 1, 0xFFFFFFFFFFFFFFFFULL, 0);
 }
 
@@ -322,7 +337,7 @@ TEST(IntegerInstructionTest, ADDInstruction_testAddi32) {
   DummyMemoryAccessImpl memoryAccess;
   memoryAccess.addRegister(dest, destination);
   memoryAccess.addRegister(reg, operand);
-  auto immediateFactory = ImmediateNodeFactory();
+  auto immediateFactory   = ImmediateNodeFactory();
   auto instructionFactory = setUpFactory({"rv32i"});
 
   TEST_RI(0, to32BitMemoryValue, "addi", 41, 1, 42);
@@ -339,7 +354,7 @@ TEST(IntegerInstructionTest, ADDInstruction_testAddi64) {
   DummyMemoryAccessImpl memoryAccess;
   memoryAccess.addRegister(dest, destination);
   memoryAccess.addRegister(reg, operand);
-  auto immediateFactory = ImmediateNodeFactory();
+  auto immediateFactory   = ImmediateNodeFactory();
   auto instructionFactory = setUpFactory({"rv32i", "rv64i"});
 
   TEST_RI(0, to64BitMemoryValue, "addi", 41, 1, 42);
@@ -352,12 +367,12 @@ TEST(IntegerInstructionTest, ADDInstruction_testAddi64) {
 
 TEST(IntegerInstructionTest, ADDInstruction_testValidation) {
   auto instructionFactory = setUpFactory({"rv32i"});
-  auto immediateFactory = ImmediateNodeFactory();
-  auto memAccess = DummyMemoryAccessImpl();
-  testIntegerInstructionValidation(memAccess, instructionFactory,
-                                   immediateFactory, "add", false);
-  testIntegerInstructionValidation(memAccess, instructionFactory,
-                                   immediateFactory, "addi", true);
+  auto immediateFactory   = ImmediateNodeFactory();
+  auto memAccess          = DummyMemoryAccessImpl();
+  testIntegerInstructionValidation(
+      memAccess, instructionFactory, immediateFactory, "add", false);
+  testIntegerInstructionValidation(
+      memAccess, instructionFactory, immediateFactory, "addi", true);
 }
 
 TEST(IntegerInstructionTest, SUBInstruction_testSub32) {
@@ -392,10 +407,10 @@ TEST(IntegerInstructionTest, SUBInstruction_testSub64) {
 
 TEST(IntegerInstructionTest, SUBInstruction_testValidation) {
   auto instructionFactory = setUpFactory({"rv32i"});
-  auto immediateFactory = ImmediateNodeFactory();
-  auto memAccess = DummyMemoryAccessImpl();
-  testIntegerInstructionValidation(memAccess, instructionFactory,
-                                   immediateFactory, "sub", false);
+  auto immediateFactory   = ImmediateNodeFactory();
+  auto memAccess          = DummyMemoryAccessImpl();
+  testIntegerInstructionValidation(
+      memAccess, instructionFactory, immediateFactory, "sub", false);
 }
 
 TEST(IntegerInstructionTest, ANDInstruction_testAnd32) {
@@ -424,12 +439,30 @@ TEST(IntegerInstructionTest, ANDInstruction_testAnd64) {
   memoryAccess.addRegister(op2, operand2);
   auto instructionFactory = setUpFactory({"rv32i", "rv64i"});
 
-  TEST_RR(0, to64BitMemoryValue, "and", 0b110110LL << 32, 0b100100LL << 32,
-          0b100100LL << 32);
-  TEST_RR(1, to64BitMemoryValue, "and", 0b100100LL << 32, 0b110110LL << 32,
-          0b100100LL << 32);
-  TEST_RR(2, to64BitMemoryValue, "and", 0b101010LL << 32, 0b010101LL << 32, 0);
-  TEST_RR(3, to64BitMemoryValue, "and", 0b010101LL << 32, 0b101010LL << 32, 0);
+  TEST_RR(0,
+          to64BitMemoryValue,
+          "and",
+          UINT64_C(0b110110) << 32,
+          UINT64_C(0b100100) << 32,
+          UINT64_C(0b100100) << 32);
+  TEST_RR(1,
+          to64BitMemoryValue,
+          "and",
+          UINT64_C(0b100100) << 32,
+          UINT64_C(0b110110) << 32,
+          UINT64_C(0b100100) << 32);
+  TEST_RR(2,
+          to64BitMemoryValue,
+          "and",
+          UINT64_C(0b101010) << 32,
+          UINT64_C(0b010101) << 32,
+          0);
+  TEST_RR(3,
+          to64BitMemoryValue,
+          "and",
+          UINT64_C(0b010101) << 32,
+          UINT64_C(0b101010) << 32,
+          0);
 }
 
 TEST(IntegerInstructionTest, ANDInstruction_testAndi32) {
@@ -439,7 +472,7 @@ TEST(IntegerInstructionTest, ANDInstruction_testAndi32) {
   DummyMemoryAccessImpl memoryAccess;
   memoryAccess.addRegister(dest, destination);
   memoryAccess.addRegister(reg, operand);
-  auto immediateFactory = ImmediateNodeFactory();
+  auto immediateFactory   = ImmediateNodeFactory();
   auto instructionFactory = setUpFactory({"rv32i"});
 
   TEST_RI(0, to32BitMemoryValue, "andi", 0b110110, 0b100100, 0b100100);
@@ -458,13 +491,18 @@ TEST(IntegerInstructionTest, ANDInstruction_testAndi64) {
   DummyMemoryAccessImpl memoryAccess;
   memoryAccess.addRegister(dest, destination);
   memoryAccess.addRegister(reg, operand);
-  auto immediateFactory = ImmediateNodeFactory();
+  auto immediateFactory   = ImmediateNodeFactory();
   auto instructionFactory = setUpFactory({"rv32i", "rv64i"});
   // it is difficult to test 64bit version, because immediate values cannot be
   // greater than 20bit
   // therefore no upper 32bit testing can be done, except for testing against 0
-  TEST_RI(0, to64BitMemoryValue, "andi", 0b110110LL << 32, 0b100100, 0);
-  TEST_RI(1, to64BitMemoryValue, "andi", 0b100100LL, 0b110110LL, 0b100100LL);
+  TEST_RI(0, to64BitMemoryValue, "andi", UINT64_C(0b110110) << 32, 0b100100, 0);
+  TEST_RI(1,
+          to64BitMemoryValue,
+          "andi",
+          UINT64_C(0b100100),
+          UINT64_C(0b110110),
+          UINT64_C(0b100100));
 
   // test immediate boundary
   test20BitImmediateBounds(instructionFactory, "andi", immediateFactory);
@@ -472,12 +510,12 @@ TEST(IntegerInstructionTest, ANDInstruction_testAndi64) {
 
 TEST(IntegerInstructionTest, ANDInstruction_testValidation) {
   auto instructionFactory = setUpFactory({"rv32i"});
-  auto immediateFactory = ImmediateNodeFactory();
-  auto memAccess = DummyMemoryAccessImpl();
-  testIntegerInstructionValidation(memAccess, instructionFactory,
-                                   immediateFactory, "and", false);
-  testIntegerInstructionValidation(memAccess, instructionFactory,
-                                   immediateFactory, "andi", true);
+  auto immediateFactory   = ImmediateNodeFactory();
+  auto memAccess          = DummyMemoryAccessImpl();
+  testIntegerInstructionValidation(
+      memAccess, instructionFactory, immediateFactory, "and", false);
+  testIntegerInstructionValidation(
+      memAccess, instructionFactory, immediateFactory, "andi", true);
 }
 
 TEST(IntegerInstructionTest, ORInstruction_testOr32) {
@@ -506,14 +544,30 @@ TEST(IntegerInstructionTest, ORINstruction_testOr64) {
   memoryAccess.addRegister(op2, operand2);
   auto instructionFactory = setUpFactory({"rv32i", "rv64i"});
 
-  TEST_RR(0, to64BitMemoryValue, "or", 0b110110LL << 32, 0b100100LL << 32,
-          0b110110LL << 32);
-  TEST_RR(1, to64BitMemoryValue, "or", 0b100100LL << 32, 0b110110LL << 32,
-          0b110110LL << 32);
-  TEST_RR(2, to64BitMemoryValue, "or", 0b101010LL << 32, 0b010101LL << 32,
-          0b111111LL << 32);
-  TEST_RR(3, to64BitMemoryValue, "or", 0b010101LL << 32, 0b101010LL << 32,
-          0b111111LL << 32);
+  TEST_RR(0,
+          to64BitMemoryValue,
+          "or",
+          UINT64_C(0b110110) << 32,
+          UINT64_C(0b100100) << 32,
+          UINT64_C(0b110110) << 32);
+  TEST_RR(1,
+          to64BitMemoryValue,
+          "or",
+          UINT64_C(0b100100) << 32,
+          UINT64_C(0b110110) << 32,
+          UINT64_C(0b110110) << 32);
+  TEST_RR(2,
+          to64BitMemoryValue,
+          "or",
+          UINT64_C(0b101010) << 32,
+          UINT64_C(0b010101) << 32,
+          UINT64_C(0b111111) << 32);
+  TEST_RR(3,
+          to64BitMemoryValue,
+          "or",
+          UINT64_C(0b010101) << 32,
+          UINT64_C(0b101010) << 32,
+          UINT64_C(0b111111) << 32);
 }
 
 TEST(IntegerInstructionTest, ORInstruction_testOri32) {
@@ -523,7 +577,7 @@ TEST(IntegerInstructionTest, ORInstruction_testOri32) {
   DummyMemoryAccessImpl memoryAccess;
   memoryAccess.addRegister(dest, destination);
   memoryAccess.addRegister(reg, operand);
-  auto immediateFactory = ImmediateNodeFactory();
+  auto immediateFactory   = ImmediateNodeFactory();
   auto instructionFactory = setUpFactory({"rv32i"});
 
   TEST_RI(0, to32BitMemoryValue, "ori", 0b110110, 0b100100, 0b110110);
@@ -540,23 +594,27 @@ TEST(IntegerInstructionTest, ORInstruction_testOri64) {
   DummyMemoryAccessImpl memoryAccess;
   memoryAccess.addRegister(dest, destination);
   memoryAccess.addRegister(reg, operand);
-  auto immediateFactory = ImmediateNodeFactory();
+  auto immediateFactory   = ImmediateNodeFactory();
   auto instructionFactory = setUpFactory({"rv32i", "rv64i"});
 
-  TEST_RI(0, to64BitMemoryValue, "ori", (0b1010110LL << 32), 0b10,
-          ((0b1010110LL << 32) + 2));
+  TEST_RI(0,
+          to64BitMemoryValue,
+          "ori",
+          (UINT64_C(0b1010110) << 32),
+          0b10,
+          ((UINT64_C(0b1010110) << 32) + 2));
   // test immediate boundary
   test20BitImmediateBounds(instructionFactory, "ori", immediateFactory);
 }
 
 TEST(IntegerInstructionTest, ORInstruction_testValidation) {
   auto instructionFactory = setUpFactory({"rv32i"});
-  auto immediateFactory = ImmediateNodeFactory();
-  auto memAccess = DummyMemoryAccessImpl();
-  testIntegerInstructionValidation(memAccess, instructionFactory,
-                                   immediateFactory, "or", false);
-  testIntegerInstructionValidation(memAccess, instructionFactory,
-                                   immediateFactory, "ori", true);
+  auto immediateFactory   = ImmediateNodeFactory();
+  auto memAccess          = DummyMemoryAccessImpl();
+  testIntegerInstructionValidation(
+      memAccess, instructionFactory, immediateFactory, "or", false);
+  testIntegerInstructionValidation(
+      memAccess, instructionFactory, immediateFactory, "ori", true);
 }
 
 TEST(IntegerInstructionTest, XORInstruction_testXor32) {
@@ -584,14 +642,30 @@ TEST(IntegerInstructionTest, XORInstruction_testXor64) {
   memoryAccess.addRegister(op2, operand2);
   auto instructionFactory = setUpFactory({"rv32i", "rv64i"});
 
-  TEST_RR(0, to64BitMemoryValue, "xor", 0b110110LL << 32, 0b100100LL << 32,
-          0b010010LL << 32);
-  TEST_RR(1, to64BitMemoryValue, "xor", 0b100100LL << 32, 0b110110LL << 32,
-          0b010010LL << 32);
-  TEST_RR(2, to64BitMemoryValue, "xor", 0b101010LL << 32, 0b010101LL << 32,
-          0b111111LL << 32);
-  TEST_RR(3, to64BitMemoryValue, "xor", 0b010101LL << 32, 0b101010LL << 32,
-          0b111111LL << 32);
+  TEST_RR(0,
+          to64BitMemoryValue,
+          "xor",
+          UINT64_C(0b110110) << 32,
+          UINT64_C(0b100100) << 32,
+          UINT64_C(0b010010) << 32);
+  TEST_RR(1,
+          to64BitMemoryValue,
+          "xor",
+          UINT64_C(0b100100) << 32,
+          UINT64_C(0b110110) << 32,
+          UINT64_C(0b010010) << 32);
+  TEST_RR(2,
+          to64BitMemoryValue,
+          "xor",
+          UINT64_C(0b101010) << 32,
+          UINT64_C(0b010101) << 32,
+          UINT64_C(0b111111) << 32);
+  TEST_RR(3,
+          to64BitMemoryValue,
+          "xor",
+          UINT64_C(0b010101) << 32,
+          UINT64_C(0b101010) << 32,
+          UINT64_C(0b111111) << 32);
 }
 
 TEST(IntegerInstructionTest, XORInstruction_testXori32) {
@@ -601,7 +675,7 @@ TEST(IntegerInstructionTest, XORInstruction_testXori32) {
   DummyMemoryAccessImpl memoryAccess;
   memoryAccess.addRegister(dest, destination);
   memoryAccess.addRegister(reg, operand);
-  auto immediateFactory = ImmediateNodeFactory();
+  auto immediateFactory   = ImmediateNodeFactory();
   auto instructionFactory = setUpFactory({"rv32i"});
 
   TEST_RI(0, to32BitMemoryValue, "xori", 0b110110, 0b100100, 0b010010);
@@ -619,23 +693,27 @@ TEST(IntegerInstructionTest, XORInstruction_testXori64) {
   DummyMemoryAccessImpl memoryAccess;
   memoryAccess.addRegister(dest, destination);
   memoryAccess.addRegister(reg, operand);
-  auto immediateFactory = ImmediateNodeFactory();
+  auto immediateFactory   = ImmediateNodeFactory();
   auto instructionFactory = setUpFactory({"rv32i", "rv64i"});
 
-  TEST_RI(0, to64BitMemoryValue, "xori", (0b100000001010110LL << 18),
-          (0b10LL << 18), (0b100000001010100LL << 18));
+  TEST_RI(0,
+          to64BitMemoryValue,
+          "xori",
+          (UINT64_C(0b100000001010110) << 18),
+          (UINT64_C(0b10) << 18),
+          (UINT64_C(0b100000001010100) << 18));
   // test immediate boundary
   test20BitImmediateBounds(instructionFactory, "xori", immediateFactory);
 }
 
 TEST(IntegerInstructionTest, XORInstruction_testValidation) {
   auto instructionFactory = setUpFactory({"rv32i"});
-  auto immediateFactory = ImmediateNodeFactory();
-  auto memAccess = DummyMemoryAccessImpl();
-  testIntegerInstructionValidation(memAccess, instructionFactory,
-                                   immediateFactory, "xor", false);
-  testIntegerInstructionValidation(memAccess, instructionFactory,
-                                   immediateFactory, "xori", true);
+  auto immediateFactory   = ImmediateNodeFactory();
+  auto memAccess          = DummyMemoryAccessImpl();
+  testIntegerInstructionValidation(
+      memAccess, instructionFactory, immediateFactory, "xor", false);
+  testIntegerInstructionValidation(
+      memAccess, instructionFactory, immediateFactory, "xori", true);
 }
 
 TEST(IntegerInstructionTest, ShiftLeftInstruction_testSll32) {
@@ -663,9 +741,14 @@ TEST(IntegerInstructionTest, ShiftLeftInstruction_testSll64) {
   memoryAccess.addRegister(op2, operand2);
   auto instructionFactory = setUpFactory({"rv32i", "rv64i"});
 
-  TEST_RR(0, to64BitMemoryValue, "sll", 0b110110LL << 32, 3, 0b110110000LL << 32);
+  TEST_RR(0,
+          to64BitMemoryValue,
+          "sll",
+          UINT64_C(0b110110) << 32,
+          3,
+          UINT64_C(0b110110000) << 32);
   // shifts use only the lower 5bit of the second operand
-  TEST_RR(1, to64BitMemoryValue, "sll", 3, 0b110110LL << 32, 3);
+  TEST_RR(1, to64BitMemoryValue, "sll", 3, UINT64_C(0b110110) << 32, 3);
 }
 
 TEST(IntegerInstructionTest, ShiftLeftInstruction_testSlli32) {
@@ -675,7 +758,7 @@ TEST(IntegerInstructionTest, ShiftLeftInstruction_testSlli32) {
   DummyMemoryAccessImpl memoryAccess;
   memoryAccess.addRegister(dest, destination);
   memoryAccess.addRegister(reg, operand);
-  auto immediateFactory = ImmediateNodeFactory();
+  auto immediateFactory   = ImmediateNodeFactory();
   auto instructionFactory = setUpFactory({"rv32i"});
 
   TEST_RI(0, to32BitMemoryValue, "slli", 0b110110, 3, 0b110110000);
@@ -691,25 +774,34 @@ TEST(IntegerInstructionTest, ShiftLeftInstruction_testSlli64) {
   DummyMemoryAccessImpl memoryAccess;
   memoryAccess.addRegister(dest, destination);
   memoryAccess.addRegister(reg, operand);
-  auto immediateFactory = ImmediateNodeFactory();
+  auto immediateFactory   = ImmediateNodeFactory();
   auto instructionFactory = setUpFactory({"rv32i", "rv64i"});
 
-  TEST_RI(0, to64BitMemoryValue, "slli", (0b110110LL << 32), 3,
-          (0b110110000LL << 32));
+  TEST_RI(0,
+          to64BitMemoryValue,
+          "slli",
+          (UINT64_C(0b110110) << 32),
+          3,
+          (UINT64_C(0b110110000) << 32));
   // shifts use only the lower 5bit of the second operand
-  TEST_RI(1, to64BitMemoryValue, "slli", (0b1LL << 32), 0b11100001, 0b10LL << 32);
+  TEST_RI(1,
+          to64BitMemoryValue,
+          "slli",
+          (UINT64_C(0b1) << 32),
+          0b11100001,
+          UINT64_C(0b10) << 32);
   // test immediate boundary
   test20BitImmediateBounds(instructionFactory, "slli", immediateFactory);
 }
 
 TEST(IntegerInstructionTest, ShiftLeftInstruction_testValidation) {
   auto instructionFactory = setUpFactory({"rv32i"});
-  auto immediateFactory = ImmediateNodeFactory();
-  auto memAccess = DummyMemoryAccessImpl();
-  testIntegerInstructionValidation(memAccess, instructionFactory,
-                                   immediateFactory, "sll", false);
-  testIntegerInstructionValidation(memAccess, instructionFactory,
-                                   immediateFactory, "slli", true);
+  auto immediateFactory   = ImmediateNodeFactory();
+  auto memAccess          = DummyMemoryAccessImpl();
+  testIntegerInstructionValidation(
+      memAccess, instructionFactory, immediateFactory, "sll", false);
+  testIntegerInstructionValidation(
+      memAccess, instructionFactory, immediateFactory, "slli", true);
 }
 
 TEST(IntegerInstructionTest, ShiftRightInstruction_testSrl32) {
@@ -737,9 +829,14 @@ TEST(IntegerInstructionTest, ShiftRightInstruction_testSrl64) {
   memoryAccess.addRegister(op2, operand2);
   auto instructionFactory = setUpFactory({"rv32i", "rv64i"});
 
-  TEST_RR(0, to64BitMemoryValue, "srl", 0b110110LL << 32, 3, 0b110110LL << 29);
+  TEST_RR(0,
+          to64BitMemoryValue,
+          "srl",
+          UINT64_C(0b110110) << 32,
+          3,
+          UINT64_C(0b110110) << 29);
   // shifts use only the lower 5bit of the second operand
-  TEST_RR(1, to64BitMemoryValue, "srl", 3, 0b110110LL << 32, 3);
+  TEST_RR(1, to64BitMemoryValue, "srl", 3, UINT64_C(0b110110) << 32, 3);
 }
 
 TEST(IntegerInstructionTest, ShiftRightInstruction_testSrli32) {
@@ -749,7 +846,7 @@ TEST(IntegerInstructionTest, ShiftRightInstruction_testSrli32) {
   DummyMemoryAccessImpl memoryAccess;
   memoryAccess.addRegister(dest, destination);
   memoryAccess.addRegister(reg, operand);
-  auto immediateFactory = ImmediateNodeFactory();
+  auto immediateFactory   = ImmediateNodeFactory();
   auto instructionFactory = setUpFactory({"rv32i"});
 
   TEST_RI(0, to32BitMemoryValue, "srli", 0b110110, 3, 0b110);
@@ -765,24 +862,34 @@ TEST(IntegerInstructionTest, ShiftRightInstruction_testSrli64) {
   DummyMemoryAccessImpl memoryAccess;
   memoryAccess.addRegister(dest, destination);
   memoryAccess.addRegister(reg, operand);
-  auto immediateFactory = ImmediateNodeFactory();
+  auto immediateFactory   = ImmediateNodeFactory();
   auto instructionFactory = setUpFactory({"rv32i", "rv64i"});
 
-  TEST_RI(0, to64BitMemoryValue, "srli", 0b110110LL << 32, 3, 0b110110LL << 29);
+  TEST_RI(0,
+          to64BitMemoryValue,
+          "srli",
+          UINT64_C(0b110110) << 32,
+          3,
+          UINT64_C(0b110110) << 29);
   // shifts use only the lower 5bit of the second operand
-  TEST_RI(1, to64BitMemoryValue, "srli", 0b11LL << 32, 0b11100001, 0b11LL << 31);
+  TEST_RI(1,
+          to64BitMemoryValue,
+          "srli",
+          UINT64_C(0b11) << 32,
+          0b11100001,
+          UINT64_C(0b11) << 31);
   // test immediate boundary
   test20BitImmediateBounds(instructionFactory, "srli", immediateFactory);
 }
 
 TEST(IntegerInstructionTest, ShiftRightInstruction_testValidation) {
   auto instructionFactory = setUpFactory({"rv32i"});
-  auto immediateFactory = ImmediateNodeFactory();
-  auto memAccess = DummyMemoryAccessImpl();
-  testIntegerInstructionValidation(memAccess, instructionFactory,
-                                   immediateFactory, "srl", false);
-  testIntegerInstructionValidation(memAccess, instructionFactory,
-                                   immediateFactory, "srli", true);
+  auto immediateFactory   = ImmediateNodeFactory();
+  auto memAccess          = DummyMemoryAccessImpl();
+  testIntegerInstructionValidation(
+      memAccess, instructionFactory, immediateFactory, "srl", false);
+  testIntegerInstructionValidation(
+      memAccess, instructionFactory, immediateFactory, "srli", true);
 }
 
 TEST(IntegerInstructionTest, ShiftRightArithmeticInstruction_testSra32) {
@@ -795,11 +902,15 @@ TEST(IntegerInstructionTest, ShiftRightArithmeticInstruction_testSra32) {
   memoryAccess.addRegister(op2, operand2);
   auto instructionFactory = setUpFactory({"rv32i"});
 
-  TEST_RR(0, to32BitMemoryValue, "sra", 0b10000000000000000000000000110110, 3,
+  TEST_RR(0,
+          to32BitMemoryValue,
+          "sra",
+          0b10000000000000000000000000110110,
+          3,
           0b11110000000000000000000000000110);
   // shifts use only the lower 5bit of the second operand
-  TEST_RR(1, to32BitMemoryValue, "sra", 3, 0b10000000000000000000000000110110,
-          0);
+  TEST_RR(
+      1, to32BitMemoryValue, "sra", 3, 0b10000000000000000000000000110110, 0);
 }
 
 TEST(IntegerInstructionTest, ShiftRightArithmeticInstruction_testSra64) {
@@ -812,14 +923,24 @@ TEST(IntegerInstructionTest, ShiftRightArithmeticInstruction_testSra64) {
   memoryAccess.addRegister(op2, operand2);
   auto instructionFactory = setUpFactory({"rv32i", "rv64i"});
 
-  TEST_RR(0, to64BitMemoryValue, "sra",
-          0b1000000000000000000000000001101100000000000000000000000000000000LL,
-          3,
-          0b1111000000000000000000000000001101100000000000000000000000000000LL);
+  TEST_RR(
+      0,
+      to64BitMemoryValue,
+      "sra",
+      UINT64_C(
+          0b1000000000000000000000000001101100000000000000000000000000000000),
+      3,
+      UINT64_C(
+          0b1111000000000000000000000000001101100000000000000000000000000000));
   // shifts use only the lower 5bit of the second operand
-  TEST_RR(1, to64BitMemoryValue, "sra", 3,
-          0b1000000000000000000000000001101100000000000000000000000000000000LL,
-          3);
+  TEST_RR(
+      1,
+      to64BitMemoryValue,
+      "sra",
+      3,
+      UINT64_C(
+          0b1000000000000000000000000001101100000000000000000000000000000000),
+      3);
 }
 
 TEST(IntegerInstructionTest, ShiftRightInstruction_testSrai32) {
@@ -829,14 +950,22 @@ TEST(IntegerInstructionTest, ShiftRightInstruction_testSrai32) {
   DummyMemoryAccessImpl memoryAccess;
   memoryAccess.addRegister(dest, destination);
   memoryAccess.addRegister(reg, operand);
-  auto immediateFactory = ImmediateNodeFactory();
+  auto immediateFactory   = ImmediateNodeFactory();
   auto instructionFactory = setUpFactory({"rv32i"});
 
-  TEST_RI(0, to32BitMemoryValue, "srai", 0b10000000000000000000000000110110, 3,
+  TEST_RI(0,
+          to32BitMemoryValue,
+          "srai",
+          0b10000000000000000000000000110110,
+          3,
           0b11110000000000000000000000000110);
   // shifts use only the lower 5bit of the second operand
-  TEST_RI(1, to32BitMemoryValue, "srai", 0b10000000000000000000000000110110,
-          0b11100001, 0b11000000000000000000000000011011);
+  TEST_RI(1,
+          to32BitMemoryValue,
+          "srai",
+          0b10000000000000000000000000110110,
+          0b11100001,
+          0b11000000000000000000000000011011);
   // test immediate boundary
   test20BitImmediateBounds(instructionFactory, "srai", immediateFactory);
 }
@@ -848,25 +977,35 @@ TEST(IntegerInstructionTest, ShiftRightInstruction_testSrai64) {
   DummyMemoryAccessImpl memoryAccess;
   memoryAccess.addRegister(dest, destination);
   memoryAccess.addRegister(reg, operand);
-  auto immediateFactory = ImmediateNodeFactory();
+  auto immediateFactory   = ImmediateNodeFactory();
   auto instructionFactory = setUpFactory({"rv32i", "rv64i"});
 
-  TEST_RI(0, to64BitMemoryValue, "srai",
-          0b1000000000000000000000000001101100000000000000000000000000000000LL,
-          3,
-          0b1111000000000000000000000000001101100000000000000000000000000000LL);
+  TEST_RI(
+      0,
+      to64BitMemoryValue,
+      "srai",
+      UINT64_C(
+          0b1000000000000000000000000001101100000000000000000000000000000000),
+      3,
+      UINT64_C(
+          0b1111000000000000000000000000001101100000000000000000000000000000));
   // shifts use only the lower 5bit of the second operand
-  TEST_RI(1, to64BitMemoryValue, "srai", 0b11LL << 32, 0b11100001, 0b11LL << 31);
+  TEST_RI(1,
+          to64BitMemoryValue,
+          "srai",
+          UINT64_C(0b11) << 32,
+          0b11100001,
+          UINT64_C(0b11) << 31);
   // test immediate boundary
   test20BitImmediateBounds(instructionFactory, "srai", immediateFactory);
 }
 
 TEST(IntegerInstructionTest, ShiftRightArithmeticInstruction_testValidation) {
   auto instructionFactory = setUpFactory({"rv32i"});
-  auto immediateFactory = ImmediateNodeFactory();
-  auto memAccess = DummyMemoryAccessImpl();
-  testIntegerInstructionValidation(memAccess, instructionFactory,
-                                   immediateFactory, "sra", false);
-  testIntegerInstructionValidation(memAccess, instructionFactory,
-                                   immediateFactory, "srai", true);
+  auto immediateFactory   = ImmediateNodeFactory();
+  auto memAccess          = DummyMemoryAccessImpl();
+  testIntegerInstructionValidation(
+      memAccess, instructionFactory, immediateFactory, "sra", false);
+  testIntegerInstructionValidation(
+      memAccess, instructionFactory, immediateFactory, "srai", true);
 }
