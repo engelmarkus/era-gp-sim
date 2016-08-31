@@ -194,7 +194,7 @@ std::uint8_t MemoryValue::getByteAt(std::size_t address) const {
       // This byte has padding
       return 8 - (byteSize % 8);
     } else {
-      return 0ul;
+      return std::size_t(0);
     }
   };
   

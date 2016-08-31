@@ -101,7 +101,7 @@ convert(const MemoryValue& memoryValue, Endianness byteOrder) {
         bitsConverted += 8;
       } else if (bitsConverted < bits) {
         // Convert only the leftmost bits
-        std::size_t bitsNeeded = std::min(8UL, bits - bitsConverted);
+        std::size_t bitsNeeded = std::min(std::size_t(8), bits - bitsConverted);
         result <<= bitsNeeded;
         result |= memoryValue.internal()[index + offset] >> (8 - bitsNeeded);
         bitsConverted += bitsNeeded;
