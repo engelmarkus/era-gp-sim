@@ -24,6 +24,7 @@
 #include <QObject>
 #include <QStringList>
 #include <QAbstractListModel>
+#include <QQmlContext>
 
 class SnapshotModel : public QAbstractListModel{
     Q_OBJECT
@@ -32,7 +33,7 @@ public:
             NameRole=Qt::UserRole+1
      };
 
-    SnapshotModel(QObject *parent = 0);
+    SnapshotModel(QQmlContext* context, QObject *parent = 0);
 
     bool removeRow(int row, const QModelIndex &parent = QModelIndex());
 
@@ -57,12 +58,19 @@ public:
 
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
 
+    /*
+     * \brief can be used to add an array of names to the snapshotmodel
+     * \parem the array
+     */
+    void addList(std::string names[]);
+
 
 protected:
     QHash<int, QByteArray> roleNames() const;
 
 private:
     QStringList list;
+    QQmlContext* context;
 };
 
 #endif // SNAPSHOTMODEL_H

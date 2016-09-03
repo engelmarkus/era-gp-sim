@@ -24,8 +24,9 @@
 #include <QQmlApplicationEngine>
 
 
-SnapshotModel::SnapshotModel(QObject *parent): QAbstractListModel(parent){
-
+SnapshotModel::SnapshotModel(QQmlContext *context, QObject *parent): QAbstractListModel(parent){
+    this->context=context;
+    context->setContextProperty("snapshotModel",  this);
 }
 
 
@@ -84,6 +85,16 @@ QVariant SnapshotModel::data(const QModelIndex &index, int role)const{
     }
     return QVariant();
 
+}
+
+void SnapshotModel::addList(std::string names[]){
+    int length=0;
+    while(!names[length].empty()){
+        length++;
+    }
+    for(int i=0; i<length; i++){
+        add(names[i]);
+    }
 }
 
 QHash<int, QByteArray> SnapshotModel::roleNames()const{
