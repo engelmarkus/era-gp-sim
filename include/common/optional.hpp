@@ -15,5 +15,7 @@ using Optional = std::experimental::optional<T>;
 #else
 #error "Missing <optional>"
 #endif
+#else
+#include "common/optional-replacement.hpp"
 #endif
 // clang-format on
