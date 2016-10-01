@@ -27,6 +27,13 @@ import QtQuick.Controls.Styles 1.4
 
 /*Modul, which should be bound to the container*/
 Item {
+    Connections{
+        target: snapshotModel
+        onAddToList:{
+            snapshotModel.addListQML(nameList);
+            console.info("Juhu!");
+        }
+    }
 
         width: 250
         height: 300

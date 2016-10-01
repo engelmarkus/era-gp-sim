@@ -30,10 +30,9 @@ SnapshotModel::SnapshotModel(QQmlContext *context, QObject *parent): QAbstractLi
 }
 
 
-void SnapshotModel::add(std::string s){
+void SnapshotModel::add(QString s){
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
-    QString st=QString::fromStdString(s);/*Converting to QString*/
-    list.append(st);
+    list.append(s);
     list.sort();/*sorting the list*/
     endInsertRows();
 }
@@ -89,12 +88,30 @@ QVariant SnapshotModel::data(const QModelIndex &index, int role)const{
 
 void SnapshotModel::addList(std::string names[]){
     int length=0;
+    QStringList newNames;
     while(!names[length].empty()){
         length++;
     }
     for(int i=0; i<length; i++){
-        add(names[i]);
+        QString s=QString::fromStdString(names[i]);
+        newNames.append(s);
     }
+    emit addToList(newNames);
+}
+
+void SnapshotModel::addListQML(QStringList names){
+//    int length=0;
+//    while(!names[length].empty()){
+//        length++;
+//    }
+//    for(int i=0; i<length; i++){
+//        add(names[i]);
+//    }
+    int length=names.count();
+    for(int i=0; i<length; +i++){
+        add(names.at(i));
+    }
+
 }
 
 QHash<int, QByteArray> SnapshotModel::roleNames()const{
@@ -102,6 +119,8 @@ QHash<int, QByteArray> SnapshotModel::roleNames()const{
     roles[NameRole] = "name";
     return roles;
 }
+
+
 
 
 

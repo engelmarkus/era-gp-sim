@@ -52,7 +52,6 @@ public:
     */
     Q_INVOKABLE void loadClicked(QByteArray i);
 
-    void add(std::string s);
 
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
@@ -64,6 +63,9 @@ public:
      */
     void addList(std::string names[]);
 
+    Q_INVOKABLE void addListQML(QStringList names);
+
+
 
 protected:
     QHash<int, QByteArray> roleNames() const;
@@ -71,6 +73,11 @@ protected:
 private:
     QStringList list;
     QQmlContext* context;
+    void add(QString s);
+
+signals:
+    void addToList(QStringList nameList);
 };
+
 
 #endif // SNAPSHOTMODEL_H

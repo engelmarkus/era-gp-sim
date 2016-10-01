@@ -15,6 +15,9 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     SnapshotModel snapmodel(engine.rootContext());
+
+    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+
     std::string array[]={"Apple","Banana", "Strawberry", "Cherry", "Tangerine", "Pineapple", "Mango", "Cranberries", "Raspberry", "Blackberry", "Pear", "Peach", "Lemon",
                          "Lime", "Aprciot", "Kiwi", "Melon", "Passion fruit", "Pomegranate", "Coconut", "Plum", "Grape", "Currant"};
     snapmodel.addList(array);
@@ -43,7 +46,7 @@ int main(int argc, char *argv[])
 //    snapmodel.add( "Currant");
 //    engine.rootContext()->setContextProperty("snapshotModel",  &snapmodel);
 
-    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+
 
     return app.exec();
 }
