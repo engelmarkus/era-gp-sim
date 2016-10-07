@@ -47,5 +47,6 @@
         <file>Components/Output/Buttons/Settings Icon Pressed@2x.png</file>
         <file>Components/Output/Buttons/Settings Icon.png</file>
         <file>Components/Output/Buttons/Settings Icon@2x.png</file>
+        <file>Components/Output/OutputSettingsWindow.qml</file>
     </qresource>
 </RCC>

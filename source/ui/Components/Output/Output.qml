@@ -23,9 +23,10 @@
 import QtQuick 2.6
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
-import QtGraphicalEffects 1.0
 
 Rectangle {
+    id: rootRectangle
+
     // Color definitions
     property color tabBarColor: Qt.rgba(236.0/255.0, 236.0/255.0, 236.0/255.0, 1.0)
     property color innerBorderColor: "#AFAFAF"
@@ -35,6 +36,8 @@ Rectangle {
 
     // Allows to select the available output views (e.g. Lightstrip, Seven-Segment, Console)
     TabView {
+        id: outputTabView
+
         anchors.fill: parent
         // Position tab bar below the content frame.
         tabPosition: Qt.BottomEdge
@@ -92,6 +95,13 @@ Rectangle {
                                 source: (control.pressed) ? "Buttons/Settings Icon Pressed.png" : "Buttons/Settings Icon.png"
                             }
                         }
+                    }
+                    // Clicking the settings button opens the output settings window.
+                    onClicked: {
+                        var component = Qt.createComponent("OutputSettingsWindow.qml")
+                        var outputSettingsWindow = component.createObject(rootRectangle)
+                        outputSettingsWindow.activeComponentIndex = outputTabView.currentIndex
+                        outputSettingsWindow.show();
                     }
                 }
             }
