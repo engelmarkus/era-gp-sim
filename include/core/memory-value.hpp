@@ -30,36 +30,6 @@
 
 class MemoryValue {
 public:
-  class boolReference {
-
-  };
-  class iterator : public std::iterator<std::random_access_iterator_tag, boolReference, int, MemoryValue*, MemoryValue> {
-    MemoryValue* const _data;
-  public:
-    explicit iterator(MemoryValue& data) : _data{ &data } {}
-    explicit iterator(MemoryValue* const data) : _data{ data } {}
-    iterator& operator++() { assert::that(_index < (*_data).getSize());_index++; return *this; }
-    iterator operator++(int) { assert::that(_index < (*_data).getSize()); iterator retval = *this; ++(*this); return retval; }
-    iterator& operator--() { assert::that(_index > 0); _index--; return *this; }
-    iterator operator--(int) { assert::that(_index > 0); iterator retval = *this; --(*this); return retval; }
-    bool operator==(iterator other) const { return _data == other._data&&_index == other._index; }
-    bool operator!=(iterator other) const { return !(*this == other); }
-    boolReference operator*() const { return (*_data)[_index]; }
-    iterator& operator+=(difference_type n){ assert::that(_index + n <= (*_data).getSize()&&_index+n>=-1); _index+=n; return *this; }
-    iterator operator+(difference_type n) const{ assert::that(_index + n <= (*_data).getSize()&&_index+n>=-1); iterator retval = *this; retval += n; return retval; }
-    friend iterator operator+(difference_type n, const iterator it) { iterator retval = it; retval += n; return retval; }//assert::that(it->_index + n <= (it->_data).getSize()&&it->_index+n>=-1);
-    iterator& operator-=(difference_type n) { assert::that(_index - n >=-1&&_index - n <=(*_data).getSize()); _index -= n; return *this; }
-    iterator operator-(difference_type n) const { assert::that(_index - n <= (*_data).getSize() && _index - n >= -1); iterator retval = *this; retval -= n; return retval; }
-    friend iterator operator-(difference_type n, const iterator it) { iterator retval = it; retval -= n; return retval; }//assert::that(it._index - n <= it._data.getSize() && it._index - n >= -1);
-    boolReference operator[](std::size_t n) const { return (*_data)[n]; };
-    difference_type operator-(const iterator b) const { assert::that(_data == b._data); return _index - b._index; }
-    difference_type operator>(const iterator b) const { assert::that(_data == b._data); return _index - b._index>0; }
-    difference_type operator<(const iterator b) const { assert::that(_data == b._data); return _index - b._index<0; }
-    difference_type operator>=(const iterator b) const { assert::that(_data == b._data); return _index - b._index>=0; }
-    difference_type operator<=(const iterator b) const { assert::that(_data == b._data); return _index - b._index<=0; }
-  private:
-    difference_type _index = 0;
-  };
   /**
    * \brief Constructs an empty MemoryValue of default length, 1 byte á 8 bit
    */
@@ -196,7 +166,48 @@ public:
   */
   void write(const MemoryValue &other, std::size_t begin = 0);
 
-  boolReference operator[](std::size_t)const;
+  class reference {
+  public:
+    reference& operator=(bool b) { _data->put(_index, b); return *this; };
+    operator bool() { return _data->get(_index); }
+    reference& flip() { _data->flip(_index); return *this; }
+    friend class MemoryValue;
+    friend class iterator;
+  private:
+    reference(MemoryValue* const data, std::size_t index) :_data(data), _index(index) {}
+    MemoryValue* const _data;
+    const std::size_t _index;
+  };
+
+  reference operator[](std::size_t address);
+
+  class iterator : public std::iterator<std::random_access_iterator_tag, reference, int, MemoryValue*, MemoryValue> {
+    MemoryValue* const _data;
+  public:
+    explicit iterator(MemoryValue& data) : _data{ &data } {}
+    explicit iterator(MemoryValue* const data) : _data{ data } {}
+    iterator& operator++() { assert::that(_index < static_cast<difference_type>(_data->getSize())); _index++; return *this; }
+    iterator operator++(int) { assert::that(_index < static_cast<difference_type>(_data->getSize())); iterator retval = *this; ++(*this); return retval; }
+    iterator& operator--() { assert::that(_index > 0); _index--; return *this; }
+    iterator operator--(int) { assert::that(_index > 0); iterator retval = *this; --(*this); return retval; }
+    bool operator==(iterator other) const { return _data == other._data&&_index == other._index; }
+    bool operator!=(iterator other) const { return !(*this == other); }
+    MemoryValue::reference operator*() const { return (*_data)[_index]; }
+    iterator& operator+=(difference_type n) { assert::that(_index + n <= static_cast<difference_type>(_data->getSize()) && _index + n >= -1); _index += n; return *this; }
+    iterator operator+(difference_type n) const { assert::that(_index + n <= static_cast<difference_type>(_data->getSize()) && _index + n >= -1); iterator retval = *this; retval += n; return retval; }
+    friend iterator operator+(difference_type n, const iterator it) { iterator retval = it; retval += n; return retval; }//assert::that(it->_index + n <= (it->_data).getSize()&&it->_index+n>=-1);
+    iterator& operator-=(difference_type n) { assert::that(_index - n >= -1 && _index - n <= static_cast<difference_type>(_data->getSize())); _index -= n; return *this; }
+    iterator operator-(difference_type n) const { assert::that(_index - n <= static_cast<difference_type>(_data->getSize()) && _index - n >= -1); iterator retval = *this; retval -= n; return retval; }
+    friend iterator operator-(difference_type n, const iterator it) { iterator retval = it; retval -= n; return retval; }//assert::that(it._index - n <= it._data.getSize() && it._index - n >= -1);
+    MemoryValue::reference operator[](std::size_t n) { return (*_data)[n]; };
+    difference_type operator-(const iterator b) const { assert::that(_data == b._data); return _index - b._index; }
+    difference_type operator>(const iterator b) const { assert::that(_data == b._data); return _index - b._index>0; }
+    difference_type operator<(const iterator b) const { assert::that(_data == b._data); return _index - b._index<0; }
+    difference_type operator>=(const iterator b) const { assert::that(_data == b._data); return _index - b._index >= 0; }
+    difference_type operator<=(const iterator b) const { assert::that(_data == b._data); return _index - b._index <= 0; }
+  private:
+    difference_type _index = 0;
+  };
 
   /**
    * \brief outputs the value onto the stream

@@ -164,6 +164,11 @@ bool MemoryValue::operator!=(const MemoryValue &other) const {
   return !((*this) == other);
 }
 
+MemoryValue::reference MemoryValue::operator[](std::size_t address) {
+  return reference(this, address);
+}
+
+
 namespace {
 constexpr uint8_t write0[8]{
     0x00, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F, 0x7F,
