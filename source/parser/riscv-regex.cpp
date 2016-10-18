@@ -80,6 +80,16 @@ std::string RiscvParser::RiscvRegex::getParameter(int n) {
   return _matches[4 + n];
 }
 
+std::pair<CodeCoordinate, CodeCoordinate>
+RiscvParser::RiscvRegex::getParameterPosition(int n) {
+  assert::that(n >= 0 && n < getParameterCount());
+  assert::that(4 + n < _matches.size());
+  CodeCoordinate start = _matches[4 + n].first - _matches.prefix().first;
+  CodeCoordinate end = _matches[4 + n].second - _matches.prefix().first;
+  return std::pair<CodeCoordinate, CodeCoordinate>(start, end);
+}
+
+
 int RiscvParser::RiscvRegex::getParameterCount() {
   if (_matches[6].matched) return 3;
   if (_matches[5].matched) return 2;

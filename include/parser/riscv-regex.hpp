@@ -67,6 +67,8 @@ class RiscvParser::RiscvRegex {
    */
   std::string getParameter(int n);
 
+  std::pair<CodeCoordinate, CodeCoordinate> getParameterPosition(int n);
+
   /**
    * Returns the number of parameters found.
    */
