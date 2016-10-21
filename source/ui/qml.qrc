@@ -48,5 +48,8 @@
         <file>Components/Output/Buttons/Settings Icon.png</file>
         <file>Components/Output/Buttons/Settings Icon@2x.png</file>
         <file>Components/Output/OutputSettingsWindow.qml</file>
+        <file>Components/Register/DefaultRegister.qml</file>
+        <file>Components/Register/FlagRegister.qml</file>
+        <file>ProjectCreationScreen.qml</file>
     </qresource>
 </RCC>

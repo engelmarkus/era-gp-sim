@@ -20,41 +20,116 @@
 #ifndef ERAGPSIM_UI_EDITOR_COMPONENT_HPP_
 #define ERAGPSIM_UI_EDITOR_COMPONENT_HPP_
 
+#include <QColor>
 #include <QObject>
+#include <QQmlContext>
 #include <QQuickTextDocument>
 #include <QRegExp>
 #include <QTextCharFormat>
 #include <QTextDocument>
-#include <QColor>
 #include <memory>
-#include "ui/syntaxhighlighter.hpp"
-#include "parser/compile-error.hpp"
+
+#include "core/command-interface.hpp"
 #include "parser/code-position.hpp"
+#include "parser/compile-error.hpp"
+#include "parser/syntax-information.hpp"
+#include "ui/syntaxhighlighter.hpp"
 
+class ParserInterface;
+
+/**
+ * This class is the c++ component for the QML Editor and manages its
+ * communication to other parts of the ui and the core.
+ *
+ */
 class EditorComponent : public QObject {
-    Q_OBJECT
-public:
+  Q_OBJECT
+ public:
+  explicit EditorComponent(QQmlContext *projectContext,
+                           ParserInterface parserInterface,
+                           CommandInterface commandInterface,
+                           QObject *parent = 0);
 
-    explicit EditorComponent(QObject *parent = 0);
+  /**
+   * \brief creates a new syntax-highlighter for this editor
+   *
+   * should only be called once at initialization of the editor
+   *
+   * \param qDocument
+   */
+  Q_INVOKABLE void init(QQuickTextDocument *qDocument);
 
-    /**
-     * \brief creates a new syntax-highlighter for this editor, should only be called once at initialization of the editor
-     * \param qDocument
-     */
-    Q_INVOKABLE void init(QQuickTextDocument *qDocument);
-    Q_INVOKABLE void sendText(QString text);
+  /**
+   * Sends the editor-text to the core to start parsing the program
+   *
+   * \param text the content of the editor
+   *
+   */
+  Q_INVOKABLE void sendText(QString text);
 
-    void setErrorList(std::vector<CompileError>&& errorList);
-    void setCurrentLine(int line);
-    //void setMakroList(std::vector<Makro>&& makroList);
+  /**
+   * emits a qml signal to parse the text.
+   *
+   */
+  void parse();
 
-private:
-    std::unique_ptr<SyntaxHighlighter> _highlighter;
-    std::vector<KeywordRule> _keywords;
+  /**
+   * Set a new list of errors to display in the editor.
+   *
+   * \param errorList List of CompileError objects.
+   *
+   */
+  void setErrorList(const std::vector<CompileError> &errorList);
 
-signals:
-    void deleteErrors();
-    void addError(QString message, int line, QColor color);
+  /**
+   * Set the current line of execution, in order to correctly display it in the
+   * editor.
+   *
+   *  \param line The line number.
+   *
+   */
+  void setCurrentLine(int line);
+
+  // void setMakroList(std::vector<Makro>&& makroList);
+
+ private:
+  /**
+   * Adds the all keywords for a token to the keyword list.
+   *
+   * \param token Token to select which type of keywords to add.
+   * \format The format for the keywords.
+   * \param patternOption Option for the regex, for example
+   *QRegularExpression::CaseInsensitiveOption.
+   * \param parserInterface ParserInterface to access the SyntaxInformation
+   *object.
+   */
+  void _addKeywords(SyntaxInformation::Token token,
+                    QTextCharFormat format,
+                    QRegularExpression::PatternOption patternOption,
+                    ParserInterface parserInterface);
+
+  /** The syntax Highlighter of this editor. Is initialized in the init()
+   * method. */
+  std::unique_ptr<SyntaxHighlighter> _highlighter;
+
+  /** A list of keywords to initialize the syntax highlighter. */
+  std::vector<KeywordRule> _keywords;
+
+  /** The command interface of the core */
+  CommandInterface _commandInterface;
+
+ signals:
+  /** A signal to delete all the errors in the editor. */
+  void deleteErrors();
+
+  /** A signal to add an error in the editor. */
+  void addError(QString message, int line, QColor color);
+
+  /** A signal to send the text to the parser. */
+  void parseText();
+
+  /** Change the highlighted line which indicates the execution point. */
+  void executionLineChanged(int line);
 };
 
 #endif /* ERAGPSIM_UI_EDITOR_COMPONENT_HPP_ */
