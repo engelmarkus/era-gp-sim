@@ -455,3 +455,11 @@ TEST(TestMemoryValue, TestIteratorBehavior) {
                assert::AssertionError);
   EXPECT_THROW(memory.begin() - memory2.end(), assert::AssertionError);
 }
+
+TEST(TestMemoryValue, toString){
+  MemoryValue instance{16};
+  std::cout << instance.toHexString(true,true) << std::endl;
+  std::cout << instance.toBinString(true,true) << std::endl;
+  std::cout << instance.toHexString(true,false) << std::endl;
+  std::cout << instance.toBinString(true,false) << std::endl;
+}

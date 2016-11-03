@@ -491,11 +491,13 @@ class MemoryValue {
    * \brief returns the 8 bit after address [address, address+8[
    * \param address first bit to be returned
    * \returns 8 bit after address [address, address+8[
+   * \note I made this public because I use it *everywhere*
    */
   std::uint8_t getByteAt(address_t address) const;
-  //I made this public because I use it *everywhere*
 
-  std::string toHexString(bool Ox, bool noLeadingZeros) const;
+  std::string toHexString(bool prefix, bool noLeadingZeros) const;
+  std::string toBinString(bool prefix, bool noLeadingZeros) const;
+
   /**
    * \brief outputs the value onto the stream
    * \param stream stream to output value to

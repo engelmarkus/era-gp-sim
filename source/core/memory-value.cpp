@@ -305,10 +305,10 @@ std::ostream &operator<<(std::ostream &stream, const MemoryValue &value) {
   return stream << "]";
 }
 
-std::string MemoryValue::toHexString(bool Ox, bool leadingZeros) const {
+std::string MemoryValue::toHexString(bool prefix, bool leadingZeros) const {
   static const char hex[] = "0123456789ABCDEF";
   std::stringstream stream{};
-  if (Ox) {
+  if (prefix) {
     stream << "0x";
   }
   bool zero = true;
@@ -331,6 +331,28 @@ std::string MemoryValue::toHexString(bool Ox, bool leadingZeros) const {
   // if no characters have been printed print 0
   if (zero) {
     stream.put('0');
+  }
+  return stream.str();
+}
+
+std::string MemoryValue::toBinString(bool prefix, bool leadingZeros) const {
+  std::stringstream stream{};
+  if (prefix) {
+    stream << "0b";
+  }
+  bool zero = true;
+  for (std::size_t i = getSize(); i-- > 0;) {
+    if (get(i)) {
+      stream << '1';
+      zero = false;
+    } else {
+      if (!zero || leadingZeros) {
+        stream << '0';
+      }
+    }
+  }
+  if (zero) {
+    stream << '0';
   }
   return stream.str();
 }
