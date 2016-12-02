@@ -61,7 +61,18 @@ void Ui::addProject(QQuickItem* tabItem,
   }
   // get the memory size from the qvariant object.
   std::size_t memorySize = memorySizeQVariant.value<std::size_t>();
+  _createProject(tabItem,
+                 projectComponent,
+                 architectureFormula,
+                 memorySize,
+                 parser.toStdString());
+}
 
+void Ui::_createProject(QQuickItem* tabItem,
+                        QQmlComponent* projectComponent,
+                        const ArchitectureFormula& architectureFormula,
+                        std::size_t memorySize,
+                        const std::string& parserName) {
   // parent is tabItem, so it gets destroyed at the same time
   QQmlContext* context = new QQmlContext(qmlContext(tabItem), tabItem);
 
@@ -70,7 +81,7 @@ void Ui::addProject(QQuickItem* tabItem,
   _projects.push_back(new GuiProject(context,
                                      architectureFormula,
                                      memorySize,
-                                     parser.toStdString(),
+                                     parserName,
                                      _snapshots,
                                      tabItem));
 
@@ -83,6 +94,41 @@ void Ui::addProject(QQuickItem* tabItem,
 
   // set visual parent of the projectItem
   projectItem->setParentItem(tabItem);
+}
+
+void Ui::loadProject(QQuickItem* tabItem,
+                     QQmlComponent* projectComponent,
+                     QUrl fileUrl) {
+  std::string fileName = QFileInfo(fileUrl.path()).fileName().toStdString();
+  std::string snapshotPath =
+      Utility::joinPaths(fileUrl.path().toStdString(),
+                         fileName + SnapshotComponent::fileExtension);
+  std::string codePath =
+      Utility::joinPaths(fileUrl.path().toStdString(), fileName);
+  // load the snapshot from file and check if it is valid
+  Json data;
+  try {
+    data = (Json::parse(Utility::loadFromFile(snapshotPath)));
+  } catch (const std::exception& exception) {
+    _snapshots->snapshotError(QString::fromStdString(
+        std::string("Loading snapshot file from save failed. ") +
+        exception.what()));
+  }
+  Snapshot snapshot(data);
+  if (!snapshot.isValid()) {
+    _snapshots->snapshotError("Loading snapshot file from save failed");
+    return;
+  }
+  // create a new project which is compatible to the snapshot
+  _createProject(tabItem,
+                 projectComponent,
+                 snapshot.getArchitectureFormula(),
+                 snapshot.getMemoryByteCount(),
+                 snapshot.getParserName());
+  // load the snapshot in the new project.
+  _projects[_projects.size() - 1]->loadSnapshot(snapshot.getJson());
+  _projects[_projects.size() - 1]->loadText(
+      QUrl(QString::fromStdString(codePath)));
 }
 
 QStringList Ui::getArchitectures() const {
@@ -217,4 +263,16 @@ void Ui::loadSnapshot(int index, QString name) {
   assert::that(index >= 0);
   assert::that(index < _projects.size());
   _projects[index]->loadSnapshot(name);
+}
+
+void Ui::saveProject(int index) {
+  assert::that(index >= 0);
+  assert::that(index < _projects.size());
+  _projects[index]->saveProject();
+}
+
+void Ui::saveProjectAs(int index, QUrl path) {
+  assert::that(index >= 0);
+  assert::that(index < _projects.size());
+  _projects[index]->saveProjectAs(path);
 }

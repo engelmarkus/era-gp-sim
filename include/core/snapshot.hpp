@@ -36,10 +36,12 @@ class Snapshot {
    * \param architectureFormula The architecture formula of the project.
    * \param memory The memory of the project.
    * \param registerSet The registers of the project.
+   * \param parserName The name of the parser of this project.
    */
   Snapshot(const ArchitectureFormula& architectureFormula,
            const Memory& memory,
-           const RegisterSet& registerSet);
+           const RegisterSet& registerSet,
+           const std::string& parserName);
 
   /**
    * Creates a snapshot from a json object.
@@ -53,7 +55,7 @@ class Snapshot {
    * This method only checks the structure of the snapshot, the content of the
    * components could still be invalid.
    */
-  bool isValid();
+  bool isValid() const;
 
   /**
    * \return returns a json object which can be used to deserialize the memory.
@@ -72,9 +74,18 @@ class Snapshot {
   ArchitectureFormula getArchitectureFormula();
 
   /**
+   * \return Returns the name of the parser.
+   */
+  std::string getParserName() const;
+
+  /**
+   * \return Returns the byte count of the memory in this snapshot.
+   */
+  std::size_t getMemoryByteCount() const;
+  /**
    * \return Returns the underlying json object.
    */
-  Json getJson();
+  Json getJson() const;
 
  private:
   Json _snapshot;

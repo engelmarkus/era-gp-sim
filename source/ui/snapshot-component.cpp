@@ -27,6 +27,8 @@
 #include "common/utility.hpp"
 #include "core/snapshot.hpp"
 
+constexpr const char* SnapshotComponent::fileExtension;
+
 SnapshotComponent::SnapshotComponent(const std::string& path, QObject* parent)
 : QObject(parent), _baseDirectory(QString::fromStdString(path)) {
   // check if snapshot directory exists, if not, create it.
@@ -36,7 +38,7 @@ SnapshotComponent::SnapshotComponent(const std::string& path, QObject* parent)
     _baseDirectory.mkpath(QString::fromStdString(path));
     _baseDirectory.cd(baseDirName);
   }
-  QString fileExtensionFilter(_fileExtension);
+  QString fileExtensionFilter(fileExtension);
   fileExtensionFilter.prepend("*");
   QStringList filterList = {fileExtensionFilter};
   // Find all subdirectories and their snapshots
@@ -87,7 +89,7 @@ std::string SnapshotComponent::snapshotPath(const QString& architecture,
                                             const QString& snapshot) {
   return Utility::joinPaths(_baseDirectory.absolutePath().toStdString(),
                             architecture.toStdString(),
-                            snapshot.toStdString() + _fileExtension);
+                            snapshot.toStdString() + fileExtension);
 }
 
 void SnapshotComponent::importSnapshot(QUrl qPath) {

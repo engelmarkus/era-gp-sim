@@ -25,10 +25,12 @@
 
 Snapshot::Snapshot(const ArchitectureFormula& architectureFormula,
                    const Memory& memory,
-                   const RegisterSet& registerSet)
+                   const RegisterSet& registerSet,
+                   const std::string& parserName)
 : _snapshot() {
   _snapshot["architecture-name"] = architectureFormula.getArchitectureName();
   _snapshot["extensions"] = architectureFormula.getUnderlying();
+  _snapshot["parser-name"] = parserName;
   _snapshot["memory"] = memory.serializeJSON();
   _snapshot["registers"] = registerSet.serializeJSON();
 }
@@ -36,11 +38,13 @@ Snapshot::Snapshot(const ArchitectureFormula& architectureFormula,
 Snapshot::Snapshot(Json json) : _snapshot(json) {
 }
 
-bool Snapshot::isValid() {
+bool Snapshot::isValid() const {
   if (!(_snapshot.count("architecture-name") == 1)) return false;
   if (!(_snapshot.count("extensions") == 1)) return false;
   if (!(_snapshot.count("memory") == 1)) return false;
   if (!(_snapshot.count("registers") == 1)) return false;
+  if (!(_snapshot.count("parser-name") == 1)) return false;
+  if (!(_snapshot["memory"].count("memory_byteCount") == 1)) return false;
 
   return true;
 }
@@ -66,6 +70,17 @@ Snapshot::Json Snapshot::getRegisterJson() {
   return _snapshot["registers"];
 }
 
-Snapshot::Json Snapshot::getJson() {
+std::string Snapshot::getParserName() const {
+  assert::that(isValid());
+  return _snapshot["parser-name"];
+}
+
+std::size_t Snapshot::getMemoryByteCount() const {
+  assert::that(isValid());
+  Json memoryJson = _snapshot["memory"];
+  return memoryJson["memory_byteCount"];
+}
+
+Snapshot::Json Snapshot::getJson() const {
   return _snapshot;
 }

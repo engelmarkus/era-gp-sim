@@ -29,6 +29,7 @@
 #include <QString>
 #include <QStringList>
 #include <memory>
+#include <string>
 #include <tuple>
 #include <vector>
 
@@ -73,13 +74,20 @@ class Ui : public QObject {
   int runUi();
 
   /**
-   *  creates a new Project, is called from qml.
+   *  Creates a new Project, is called from qml. This method creates the
+   * architecture formula and calls _createProject.
+   *  \see _createProject
    *
    * \param tabItem The QQuickItem of the tab/parent of the project in qml. This
    * is used as parent of the gui Project, therefore its lifetime is controlled
    * by the tabItem.
    * \param projectComponent The QQmlComponent to be used to create the qml part
    * of the project.
+   * \param memorySizeQVariant The size of the memory.
+   * \param architecture The name of the architecture.
+   * \param optionName The name of the architecture option(list of extensions in
+   * the _architectureMap).
+   * \param parser The name of the parser.
    */
   Q_INVOKABLE void addProject(QQuickItem* tabItem,
                               QQmlComponent* projectComponent,
@@ -87,6 +95,19 @@ class Ui : public QObject {
                               const QString& architecture,
                               const QString& optionName,
                               const QString& parser);
+  /**
+   * Loads a project save and initializes a new project from it.
+   *
+   * \param tabItem Parameter for the call to the _createProject method.
+   * \param projectComponent Parameter for the call to the _createProject
+   * method.
+   * \param fileUrl The path of the directory of the project name. It is assumed
+   * that the save files have the same (base)name.
+   */
+  Q_INVOKABLE void loadProject(QQuickItem* tabItem,
+                               QQmlComponent* projectComponent,
+                               QUrl fileUrl);
+
   /**
    * Returns a list of architecture names.
    *
@@ -195,14 +216,49 @@ class Ui : public QObject {
   Q_INVOKABLE void saveSnapshot(int index, QString name);
 
   /**
-   * Call loadSnapshot on the specified project.
+   * Loads the specified snapshot.
    *
    * \param index The index of the project.
    * \param name The name of the snapshot.
    */
   Q_INVOKABLE void loadSnapshot(int index, QString name);
 
+
+  /**
+   * Call saveProject on the specified project.
+   *
+   * \param index The index of the project..
+   */
+  Q_INVOKABLE void saveProject(int index);
+
+  /**
+   * Saves a project.
+   *
+   * \param index The index of the project.
+   * \param path The path of the project.
+   */
+  Q_INVOKABLE void saveProjectAs(int index, QUrl path);
+
  private:
+  /**
+   * Creates a new project with an own QQmlContext and a GuiProject.
+   *
+   * \param tabItem The QQuickItem of the tab/parent of the project in qml. This
+   * is used as parent of the gui Project, therefore its lifetime is controlled
+   * by the tabItem.
+   * \param projectComponent The QQmlComponent to be used to create the qml part
+   * of the project.
+   * \param architectureFormula The architecture formula for the
+   * GuiProject/core.
+   * \param memorySize The memory size which is given to the core.
+   * \param parserName The name of the parser which is used for this project.
+   */
+  void _createProject(QQuickItem* tabItem,
+                      QQmlComponent* projectComponent,
+                      const ArchitectureFormula& architectureFormula,
+                      std::size_t memorySize,
+                      const std::string& parserName);
+
   /** loads the architectures and extensions from a json file. */
   void _loadArchitectures();
 

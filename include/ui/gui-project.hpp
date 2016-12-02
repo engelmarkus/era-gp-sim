@@ -146,8 +146,9 @@ class GuiProject : QObject {
    * \brief saves with another name
    *
    * \param name the new name
+   * \param saveAsDefault Saves the path as default save path if this is true.
    */
-  void saveTextAs(QUrl path);
+  void saveTextAs(QUrl path, bool saveAsDefault = true);
 
   /**
    * \brief Load a text file into the editor.
@@ -162,6 +163,26 @@ class GuiProject : QObject {
    * \param qName name of the snapshot
    */
   void saveSnapshot(QString qName);
+
+  /**
+   * Loads a snapshot from a json object.
+   *
+   * \param snapshot The snapshot as json object.
+   */
+  void loadSnapshot(Json snapshot);
+
+  /**
+   * Save the current project to the default path.
+   * If the path was not set the user is asked for a path.
+   */
+  void saveProject();
+
+  /**
+   * Saves the current project to a specified path. Sets the default path.
+   *
+   * \param path The path to save the project to.
+   */
+  void saveProjectAs(QUrl path);
 
   /**
    * \brief Removes a snapshot.
@@ -250,6 +271,11 @@ class GuiProject : QObject {
   QString _defaultTextFileSavePath;
 
   /**
+   * The default path to save this project to.
+   */
+  QString _defaultProjectSavePath;
+
+  /**
    * A shared pointer to the configuration json (for snapshots,...)
    */
   std::shared_ptr<SnapshotComponent> _snapshotComponent;
@@ -297,6 +323,11 @@ class GuiProject : QObject {
    * text save.
    */
   void saveTextAs();
+
+  /**
+   * \brief A signal to notify the gui to ask for a save path for the project.
+   */
+  void saveProjectAs();
 
   /**
    * Display an error in the ui.

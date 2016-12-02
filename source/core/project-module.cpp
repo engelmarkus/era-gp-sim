@@ -27,7 +27,8 @@ ProjectModule::ProjectModule(const ArchitectureFormula& architectureFormula,
 : _stopCondition(std::make_shared<ConditionTimer>())
 , _schedulerProject(std::make_shared<Scheduler>())
 , _schedulerParsingAndExecution(std::make_shared<Scheduler>())
-, _proxyProject(std::move(_schedulerProject), architectureFormula, memorySize)
+, _proxyProject(
+      std::move(_schedulerProject), architectureFormula, memorySize, parserName)
 , _memoryAccess(_proxyProject, _stopCondition)
 , _memoryManager(_proxyProject)
 , _architectureAccess(_proxyProject)

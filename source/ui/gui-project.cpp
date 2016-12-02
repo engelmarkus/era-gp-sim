@@ -48,6 +48,7 @@ GuiProject::GuiProject(QQmlContext* context,
                  _projectModule.getMemoryAccess(),
                  context)
 , _defaultTextFileSavePath()
+, _defaultProjectSavePath()
 , _snapshotComponent(snapshotComponent)
 , _architectureFormulaString(SnapshotComponent::architectureToString(formula)) {
   context->setContextProperty("guiProject", this);
@@ -137,9 +138,9 @@ void GuiProject::saveText() {
   }
 }
 
-void GuiProject::saveTextAs(QUrl path) {
+void GuiProject::saveTextAs(QUrl path, bool saveAsDefault) {
   QString qName = path.path();
-  _defaultTextFileSavePath = qName;
+  if (saveAsDefault) _defaultTextFileSavePath = qName;
   std::string name = qName.toStdString();
   std::string text = _editorComponent.getText().toStdString();
   try {
@@ -177,6 +178,42 @@ void GuiProject::saveSnapshot(QString qName) {
   }
 }
 
+void GuiProject::loadSnapshot(Json snapshot) {
+  _projectModule.getMemoryManager().loadSnapshot(snapshot);
+  _editorComponent.parse(true);
+}
+
+void GuiProject::saveProject() {
+  if (_defaultProjectSavePath.isEmpty()) {
+    emit saveProjectAs();
+  } else {
+    saveProjectAs(QUrl(_defaultProjectSavePath));
+  }
+}
+
+void GuiProject::saveProjectAs(QUrl path) {
+  QFileInfo saveInfo = QFileInfo(path.path());
+  QString saveName = saveInfo.fileName();
+  QDir saveDirectory = saveInfo.absoluteDir();
+  if (!saveDirectory.exists(saveName) || !saveInfo.isDir()) {
+    saveDirectory.mkpath(saveName);
+  }
+  Json snapshot = _projectModule.getMemoryManager().generateSnapshot().get();
+  std::string snapshotString = snapshot.dump(4);
+  std::string codePath =
+      Utility::joinPaths(path.path().toStdString(), saveName.toStdString());
+  saveTextAs(QUrl(QString::fromStdString(codePath)), false);
+  try {
+    std::string snapshotPath = Utility::joinPaths(
+        path.path().toStdString(),
+        saveName.toStdString() + SnapshotComponent::fileExtension);
+    Utility::storeToFile(snapshotPath, snapshot.dump(4));
+    _defaultProjectSavePath = path.path();
+  } catch (const std::exception& exception) {
+    _throwError("Project save failed!", std::vector<std::string>());
+  }
+}
+
 void GuiProject::removeSnapshot(QString qName) {
   _snapshotComponent->removeSnapshot(_architectureFormulaString, qName);
 }
@@ -186,8 +223,7 @@ void GuiProject::loadSnapshot(QString qName) {
     std::string path =
         _snapshotComponent->snapshotPath(_architectureFormulaString, qName);
     Json snapshot = Json::parse(Utility::loadFromFile(path));
-    _projectModule.getMemoryManager().loadSnapshot(snapshot);
-    _editorComponent.parse(true);
+    loadSnapshot(snapshot);
   } catch (const std::exception& exception) {
     _throwError(
         std::string("Could not load snapshot from file! ") + exception.what(),

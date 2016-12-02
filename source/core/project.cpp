@@ -26,14 +26,15 @@
 
 Project::Project(std::weak_ptr<Scheduler> &&scheduler,
                  const ArchitectureFormula &architectureFormula,
-                 size_t memorySize)
+                 size_t memorySize,
+                 const std::string &parserName)
 : Servant(std::move(scheduler))
 , _architecture(Architecture::Brew(architectureFormula))
 , _memory(memorySize, _architecture.getByteSize())
 , _registerSet()
 , _architectureFormula(architectureFormula)
-, _errorCallback(
-      [](const std::string &s, const std::vector<std::string> &v) {}) {
+, _errorCallback([](const std::string &s, const std::vector<std::string> &v) {})
+, _parserName(parserName) {
   _architecture.validate();
 
   for (UnitInformation unitInfo : _architecture.getUnits()) {
@@ -184,7 +185,7 @@ void Project::loadSnapshot(Json snapshotData) {
 }
 
 Project::Json Project::generateSnapshot() const {
-  Snapshot snapshot(_architectureFormula, _memory, _registerSet);
+  Snapshot snapshot(_architectureFormula, _memory, _registerSet, _parserName);
   return snapshot.getJson();
 }
 

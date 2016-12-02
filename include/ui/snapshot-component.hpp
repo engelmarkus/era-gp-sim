@@ -98,15 +98,15 @@ class SnapshotComponent : public QObject {
   */
   static QString architectureToString(const ArchitectureFormula& formula);
 
+  /** The file extension of snapshots. */
+  static constexpr auto fileExtension = ".snapshot";
+
  private:
   /** The base directory of the configuration. */
   QDir _baseDirectory;
 
   /** A map of architecture-signature to a list of extensions. */
   SnapshotMap _snapshotMap;
-
-  /** The file extension of snapshots. */
-  static constexpr auto _fileExtension = ".snapshot";
 
  signals:
   /** A signal that the snapshot list changed. */

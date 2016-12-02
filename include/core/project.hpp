@@ -21,6 +21,7 @@
 #define ERAGPSIM_CORE_PROJECT_HPP_
 
 #include <functional>
+#include <string>
 
 #include "arch/common/architecture-formula.hpp"
 #include "arch/common/architecture.hpp"
@@ -65,10 +66,12 @@ class Project : public Servant {
    *
    * \param memorySize The number of memory cells
    *
+   * \param parserName The name of the parser, needed for snapshots.
    */
   Project(std::weak_ptr<Scheduler> &&scheduler,
           const ArchitectureFormula &architectureFormula,
-          size_t memorySize);
+          size_t memorySize,
+          const std::string &parserName);
 
   /**
    * Calls Memory::get(size_t address, size_t length = 1) const
@@ -283,6 +286,9 @@ class Project : public Servant {
   /** A callback to signal a error to the ui. */
   Callback<const std::string &, const std::vector<std::string> &>
       _errorCallback;
+
+  /** The name of the parser of this project, is needed for snapshots. */
+  std::string _parserName;
 };
 
 #endif /* ERAGPSIM_CORE_PROJECT_HPP_ */

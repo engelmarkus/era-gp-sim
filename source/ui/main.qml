@@ -49,6 +49,12 @@ ApplicationWindow {
         }
     }
 
+    function loadProject(filePath) {
+      var tab = tabView.addTab("", emptyTab);
+      tabView.currentIndex = tabView.count - 1;
+      ui.loadProject(tab, projectComponent, filePath);
+    }
+
     function createProject() {
         tabView.addTab("Create new project...", tabs);
         tabView.currentIndex = tabView.count - 1;
@@ -80,6 +86,13 @@ ApplicationWindow {
         }
     }
 
+    Component{
+      id: emptyTab
+      Item{
+        anchors.fill: parent
+      }
+    }
+
     //this component is instantiated by the addProject method
     Component{
         id: projectComponent
@@ -103,6 +116,9 @@ ApplicationWindow {
             target: guiProject
             onSaveTextAs: {
               menubar.actionSaveAs();
+            }
+            onSaveProjectAs: {
+              menubar.actionSaveProjectAs();
             }
             onError: {
               window.errorDialog.text = errorMessage;

@@ -26,12 +26,23 @@ MenuBar {
     property var main
 
     function saveAs(filePath) {
-      console.log("save path: " + filePath)
+      console.log("save path: " + filePath);
       ui.saveTextAs(tabView.currentIndex, filePath);
     }
 
     function actionSaveAs() {
       main.fileDialog.onAcceptedFunction = saveAs;
+      main.fileDialog.selectExisting = false;
+      main.fileDialog.open();
+    }
+
+    function saveProjectAsFunction(filePath) {
+      console.log("project save path:" + filePath);
+      ui.saveProjectAs(tabView.currentIndex, filePath);
+    }
+
+    function actionSaveProjectAs() {
+      main.fileDialog.onAcceptedFunction = saveProjectAsFunction;
       main.fileDialog.selectExisting = false;
       main.fileDialog.open();
     }
@@ -51,6 +62,15 @@ MenuBar {
             }
         }
         MenuItem{
+          text: "Load Project..."
+          onTriggered: {
+            main.fileDialog.onAcceptedFunction = main.loadProject;
+            main.fileDialog.selectExisting = true;
+            main.fileDialog.selectFolder = true;
+            main.fileDialog.open();
+          }
+        }
+        MenuItem{
             text: "New..."
             onTriggered: {
                 main.createProject();
@@ -68,6 +88,20 @@ MenuBar {
             onTriggered: {
                 actionSaveAs();
             }
+        }
+        MenuItem{
+          id: saveProject
+          text: "Save Project"
+          onTriggered: {
+            ui.saveProject(main.currentIndex);
+          }
+        }
+        MenuItem{
+          id: saveProjectAs
+          text: "Save Project as..."
+          onTriggered: {
+            actionSaveProjectAs();
+          }
         }
         MenuItem{
             text: "Save Snapshot"
