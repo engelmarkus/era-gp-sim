@@ -34,7 +34,7 @@ ValidationResult SimulatorSleepInstructionNode::validate(
     return ValidationResult::fail(
         QT_TRANSLATE_NOOP("Syntax-Tree-Validation",
                           "%1 must have exaclty one operand"),
-        _information.getMnemonic());
+        getInstructionInformation().getMnemonic());
   }
   auto &operand = _children.at(0);
   auto type = operand->getType();
@@ -43,7 +43,7 @@ ValidationResult SimulatorSleepInstructionNode::validate(
     return ValidationResult::fail(
         QT_TRANSLATE_NOOP("Syntax-Tree-Validation",
                           "%1 may only have an immediate or register operand"),
-        _information.getMnemonic());
+        getInstructionInformation().getMnemonic());
   }
 
   auto opValue = operand->getValue(memoryAccess);

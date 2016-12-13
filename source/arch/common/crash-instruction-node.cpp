@@ -26,12 +26,12 @@ ValidationResult SimulatorCrashInstructionNode::validate(
     return ValidationResult::fail(
         QT_TRANSLATE_NOOP("Syntax-Tree-Validation",
                           "%1 may only have 1 operand"),
-        _information.getMnemonic());
+        getInstructionInformation().getMnemonic());
   }
   if (_children.at(0)->getType() != Type::OTHER) {
     return ValidationResult::fail(
         QT_TRANSLATE_NOOP("Syntax-Tree-Validation", "%1 invalid operand type"),
-        _information.getMnemonic());
+        getInstructionInformation().getMnemonic());
   }
   return ValidationResult::success();
 }

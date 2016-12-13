@@ -26,8 +26,8 @@ MemoryValue SleepInstruction::assemble() const {
 }
 
 const Translateable &SleepInstruction::getInstructionDocumentation() const {
-    assert::that(_documentation && _documentation->isContextInformationAvailable(_information));
-    return _documentation->getContextInformation(_information);
+    assert::that(_documentation && _documentation->isContextInformationAvailable(getInstructionInformation()));
+    return _documentation->getContextInformation(getInstructionInformation());
 }
 
 MemoryValue CrashInstruction::assemble() const {
@@ -36,8 +36,8 @@ MemoryValue CrashInstruction::assemble() const {
 }
 
 const Translateable& CrashInstruction::getInstructionDocumentation() const {
-    assert::that(_documentation && _documentation->isContextInformationAvailable(_information));
-    return _documentation->getContextInformation(_information);
+    assert::that(_documentation && _documentation->isContextInformationAvailable(getInstructionInformation()));
+    return _documentation->getContextInformation(getInstructionInformation());
 }
 
 void SleepInstruction::setDocumentation(const std::shared_ptr<InstructionContextInformation> &documentation) {
