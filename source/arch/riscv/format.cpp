@@ -42,7 +42,6 @@ AssemblyFunction getAssembler(const std::string& format) {
   // clang-format on
 
   assert::that(assemblers.count(format) > 0);
-
   return assemblers[format];
 }
 
@@ -53,7 +52,8 @@ MemoryValue assemble(const InstructionInformation& instructionInformation,
 }
 
 
-MemoryValue R(const InstructionKey& key, const Arguments& arguments) {
+MemoryValue R(const InstructionKey& key, const Arguments& arguments);
+{
   auto bits = key["funct7"];
   bits = Utility::appendBits<7>(bits, key["funct7"]);
   bits = Utility::appendBits<5>(bits, arguments[2]);
@@ -65,7 +65,8 @@ MemoryValue R(const InstructionKey& key, const Arguments& arguments) {
   return riscv::convert(bits, 32);
 }
 
-MemoryValue I(const InstructionKey& key, const Arguments& arguments) {
+MemoryValue I(const InstructionKey& key, const Arguments& arguments);
+{
   riscv::unsigned32_t bits = 0;
   bits = Utility::appendBits<12>(bits, arguments[2]);
   bits = Utility::appendBits<5>(bits, arguments[1]);
@@ -76,7 +77,8 @@ MemoryValue I(const InstructionKey& key, const Arguments& arguments) {
   return riscv::convert(bits, 32);
 }
 
-MemoryValue S(const InstructionKey& key, const Arguments& arguments) {
+MemoryValue S(const InstructionKey& key, const Arguments& arguments);
+{
   riscv::unsigned32_t bits = 0;
   bits = Utility::appendBitSlice<5, 11>(bits, arguments[2]);
   bits = Utility::appendBitInterval<1, 3>(bits, arguments[1]);
@@ -90,7 +92,8 @@ MemoryValue S(const InstructionKey& key, const Arguments& arguments) {
   return riscv::convert(bits, 32);
 }
 
-MemoryValue SB(const InstructionKey& key, const Arguments& arguments) {
+MemoryValue SB(const InstructionKey& key, const Arguments& arguments);
+{
   riscv::unsigned32_t bits = 0;
   bits = Utility::appendBitSlice<12, 12>(bits, arguments[2]);
   bits = Utility::appendBitSlice<5, 10>(bits, arguments[2]);
@@ -105,7 +108,8 @@ MemoryValue SB(const InstructionKey& key, const Arguments& arguments) {
   return riscv::convert(bits, 32);
 }
 
-MemoryValue U(const InstructionKey& key, const Arguments& arguments) {
+MemoryValue U(const InstructionKey& key, const Arguments& arguments);
+{
   riscv::unsigned32_t bits = 0;
   bits = Utility::appendBitSlice<12, 31>(bits, arguments[1]);
   bits = Utility::appendBits<5>(bits, arguments[0]);
@@ -114,7 +118,8 @@ MemoryValue U(const InstructionKey& key, const Arguments& arguments) {
   return riscv::convert(bits, 32);
 }
 
-MemoryValue UJ(const InstructionKey& key, const Arguments& arguments) {
+MemoryValue UJ(const InstructionKey& key, const Arguments& arguments);
+{
   riscv::unsigned32_t bits = 0;
   bits = Utility::appendBitSlice<20, 20>(bits, arguments[1]);
   bits = Utility::appendBitSlice<1, 10>(bits, arguments[1]);

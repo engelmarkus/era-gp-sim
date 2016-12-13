@@ -18,7 +18,23 @@
 
 #include "gtest/gtest.h"
 
-#include "tests/arch/riscv/base-fixture.hpp"
+#include <cstdint>
+#include <iostream>
+#include <iostream>
+#include <iterator>
+#include <memory>
+#include <vector>
+
+#include "arch/common/abstract-syntax-tree-node.hpp"
+#include "arch/common/immediate-node.hpp"
+#include "arch/common/immediate-node.hpp"
+#include "arch/common/instruction-key.hpp"
+#include "arch/common/instruction-set.hpp"
+#include "arch/riscv/formats.hpp"
+#include "arch/riscv/instruction-node.hpp"
+#include "arch/riscv/integer-instructions.hpp"
+#include "arch/riscv/register-node.hpp"
+#include "core/memory-value.hpp"
 
 using namespace riscv;
 
