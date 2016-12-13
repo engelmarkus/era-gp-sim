@@ -71,11 +71,7 @@ convert(const T& value) {
 template <typename T>
 std::enable_if_t<std::is_integral<T>::value, MemoryValue>
 convert(const T& value, std::size_t size) {
-  return conversions::convert(value,
-                              size,
-                              riscv::BITS_PER_BYTE,
-                              riscv::ENDIANNESS,
-                              riscv::SIGNED_REPRESENTATION);
+    return conversions::convert(value, size, riscv::BITS_PER_BYTE, riscv::ENDIANNESS, riscv::SIGNED_REPRESENTATION);
 }
 
 /**
@@ -112,22 +108,9 @@ void storeRegister(MemoryAccess& memoryAccess,
 template <typename UnsignedWord>
 std::enable_if_t<std::is_unsigned<UnsignedWord>::value, bool>
 isAddressValid(MemoryAccess& memoryAccess, UnsignedWord absoluteAdress) {
-  UnsignedWord lowerBound = 0;// TODO first adress of assembled code
-  UnsignedWord upperBound =
-      memoryAccess.getMemorySize().get();// TODO last adress of assembled code
-  return absoluteAdress >= lowerBound && absoluteAdress < upperBound;
-}
-
-template <std::size_t numberOfBits, typename T>
-T appendBits(T& original, const MemoryValue& memoryValue) {
-  auto number = convert<T>(memoryValue);
-  return ::Utility::appendBits<numberOfBits>(original, number);
-}
-
-template <std::size_t firstBit, std::size_t lastBit, typename T, typename U>
-T appendBitSlice(const T& original, const U& value) {
-  auto number = convert<T>(memoryValue);
-  return ::Utility::appendBitSlice<firstBit, lastBit>(original, number);
+    UnsignedWord lowerBound = 0;//TODO first adress of assembled code
+    UnsignedWord upperBound = memoryAccess.getMemorySize().get();//TODO last adress of assembled code
+    return absoluteAdress >= lowerBound && absoluteAdress < upperBound;
 }
 }
 
