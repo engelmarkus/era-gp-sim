@@ -15,6 +15,7 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
+            - cmake-3.2
             - g++-5
       env: COMPILER=g++-5
     - compiler: clang
@@ -24,24 +25,9 @@ matrix:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-precise-3.7
           packages:
+            - cmake-3.2
             - clang-3.7
       env: COMPILER=clang++-3.7
-
-install:
-  - CMAKE_VERSION_MM=3.2
-  - CMAKE_VERSION_FULL=$CMAKE_VERSION_MM.2
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-      sudo apt-get update -qq
-      && sudo apt-get install -qq qt5-qmake qtbase5-dev qtdeclarative5-dev
-      && wget --no-check-certificate http://www.cmake.org/files/v${CMAKE_VERSION_MM}/cmake-${CMAKE_VERSION_FULL}-Linux-x86_64.sh
-      && sudo sh cmake-${CMAKE_VERSION_FULL}-Linux-x86_64.sh --prefix=/usr/local --exclude-subdir;
-    fi
-  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then
-    brew update
-      && ((brew list -1 | grep -q "^$cmake\$") || brew install cmake)
-      && (brew outdated cmake || brew upgrade cmake)
-      && cmake --version;
-    fi
 
 before_script:
   - export CXX=$COMPILER CC=$CCOMPILER
