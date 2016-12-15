@@ -22,10 +22,10 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.6
+            - llvm-toolchain-precise-3.7
           packages:
-            - clang-3.6
-      env: COMPILER=clang++-3.6
+            - clang-3.7
+      env: COMPILER=clang++-3.7
 
 install:
   - CMAKE_VERSION_MM=3.2
