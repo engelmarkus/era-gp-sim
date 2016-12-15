@@ -3,7 +3,7 @@
 
 language: cpp
 sudo: required
-dist: trusty
+dist: xenial
 notifications:
   slack: era-tum:H6XLebbfxen7b1oqUO1nNVny
 
