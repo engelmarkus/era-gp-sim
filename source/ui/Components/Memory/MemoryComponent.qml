@@ -22,10 +22,23 @@ import QtQuick.Controls 1.5
 import QtQuick.Controls.Styles 1.4
 import QtGraphicalEffects 1.0
 
+
+
+
 Item {
     // number_bits: holds the number of bits shown in each memory cell,
     // it is used for calculating the address and for fetching the right amount of bits from the core
     property int number_bits: 8
+
+    ScrollView {
+        Rectangle {
+            anchors.fill: parent
+        }
+
+    Flickable{
+        anchors.fill: parent
+        contentWidth: tableView.width*tableView.scale
+        contentHeight: tableView.height*tableView.scale
 
 
     TableView {
@@ -65,7 +78,22 @@ Item {
         Component.onCompleted: {
             tableView.insertColumn( tableView.columnCount - 1, column);
         }
+
+        //scaling transofmation for zooming
+        transform: Scale {
+            id: scale
+            property real zoom: 1
+            origin.x: 0;
+            origin.y: 0;
+            xScale: zoom;
+            yScale: zoom;
+            }
     }
+
+
+    }
+    }
+
 
     Component {
         // component for a column with the contents of the memory
