@@ -113,13 +113,48 @@ Item {
         // makes each memory cell editable by using a textbox
         // when editing is finished the new value is passed to the memory in the core
         id: inputBox
-        TextField {
-            id: textFieldMemoryValue
-            text: styleData.value
 
-            onEditingFinished: {
-                // update internal memory; use right number representation and byte size
-                memoryModel.setValue(styleData.row * (number_bits / 8), textFieldMemoryValue.text, number_bits, tableView.getColumn(styleData.column).role);
+        MouseArea {
+            hoverEnabled: true
+            anchors.fill: parent
+            // fadein on mouse hover
+            onHoveredChanged: {
+                if(containsMouse)
+                    textFieldMemoryValue.borderopacity = 1;
+                else
+                    textFieldMemoryValue.borderopacity = 0;
+            }
+
+            TextField {
+                id: textFieldMemoryValue
+                text: styleData.value
+                anchors.fill: parent
+
+                // fadein effect
+                property double borderopacity: 0
+                Behavior on borderopacity {
+                    NumberAnimation {
+                        duration: 250
+                        easing.type: Easing.OutCubic
+                    }
+                }
+
+                onEditingFinished: {
+                    // update internal memory; use right number representation and byte size
+                    memoryModel.setValue(styleData.row * (number_bits / 8), textFieldMemoryValue.text, number_bits, tableView.getColumn(styleData.column).role);
+                }
+
+                style: TextFieldStyle {
+                    id: style
+                    background: Item{
+                        // textfield as background for default look and feel
+                        TextField {
+                            id: background
+                            anchors.fill: parent
+                            opacity: textFieldMemoryValue.borderopacity
+                        }
+                    }
+                }
             }
         }
     }
